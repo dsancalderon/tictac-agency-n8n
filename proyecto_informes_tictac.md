@@ -9,7 +9,7 @@
 
 ## 1. Visión y Objetivo del Proyecto
 
-El objetivo es construir un **Flujo de Automatización Bajo Demanda en n8n** que permita a Nicolás (Director de Tic Tac Agency) solicitar y generar informes ejecutivos semanales de alto impacto para los clientes de su agencia directamente desde **WhatsApp**.
+El objetivo es construir un **Flujo de Automatización Bajo Demanda en n8n** que permita a Nicolás (Director de Tic Tac Agency) solicitar y generar informes ejecutivos cada siete días para los clientes de su agencia directamente desde **WhatsApp**. Cada informe representa el acumulado del mes: comienza el día 1 y termina en el instante de generación.
 
 El sistema consulta los datos cuantitativos de **HubSpot** y la hoja de metas de la agencia, utiliza un Modelo de Lenguaje (**Gemini/OpenAI API**) para redactar la síntesis cualitativa con el tono estratégico de Tic Tac Agency, y clona y rellena automáticamente una plantilla estándar en **Google Slides** de 29 diapositivas, entregando el archivo final en Google Drive con una notificación por WhatsApp.
 
@@ -81,10 +81,10 @@ graph TD
   * ID de Empresa en HubSpot.
   * ID de la Plantilla de Google Slides de Tic Tac Agency.
   * ID de la Carpeta de Google Drive del Cliente.
-  * Metas semanales de leads e inversión.
+  * Metas mensuales o metas del periodo acumulado de leads e inversión.
 
 ### Nodo 7: Data Collector (HubSpot API Node / HTTP Request)
-* **Función:** Consulta la API de HubSpot para el rango de la última semana:
+* **Función:** Consulta la API de HubSpot entre `periodStart` y `periodEnd`, es decir, desde el primer día del mes hasta el instante de generación:
   * Conteo de contactos/leads por etapa del pipeline (Registrados, MQLs, No Nicho, Pendientes de Clasificación, Ventas).
 
 ### Nodo 8: AI Strategic Copywriting (Gemini / OpenAI API Node)
@@ -125,7 +125,7 @@ Basado en la presentación real de 29 diapositivas de Tic Tac Agency (Proyecto P
 
 ### Fase 2: Escalado Multi-Cliente
 * **Expansión:** Adición de nuevas filas en la hoja de Google Sheets por cada cliente nuevo de Tic Tac Agency.
-* **Infraestructura:** Migración opcional al plan Starter de Render ($7 USD/mes) cuando la carga semanal aumente.
+* **Infraestructura:** Migración opcional al plan Starter de Render ($7 USD/mes) cuando aumente la carga de solicitudes.
 
 ---
 
@@ -133,7 +133,7 @@ Basado en la presentación real de 29 diapositivas de Tic Tac Agency (Proyecto P
 
 ```text
 Eres un Director de Estrategia de Marketing Digital de la agencia "Tic Tac Agency".
-Tu tarea es analizar los métricos cuantitativos semanales de las campañas y CRM del cliente y redactar observaciones ejecutivas breves, formales y proactivas para ser insertadas en una presentación de Google Slides.
+Tu tarea es analizar las métricas cuantitativas acumuladas del mes de las campañas y CRM del cliente, desde el día 1 hasta el instante de generación, y redactar observaciones ejecutivas breves, formales y proactivas para ser insertadas en una presentación de Google Slides. La revisión puede ocurrir cada siete días, pero nunca debes describir el periodo como una semana aislada ni como los últimos siete días.
 
 Formatos requeridos de tono:
 - Utiliza frases estratégicas como: "Durante los primeros días del período observamos...", "Desde la agencia, consideramos que...", "El siguiente paso será...".

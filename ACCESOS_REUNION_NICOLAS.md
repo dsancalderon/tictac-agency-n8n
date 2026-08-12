@@ -77,7 +77,7 @@ No se requieren permisos de escritura durante la primera fase.
 - [ ] Enlace de la carpeta de destino de informes.
 - [ ] Permiso de edición sobre la carpeta de destino.
 - [ ] Correo de las personas que deben poder abrir los informes.
-- [ ] Ejemplos de capturas o gráficos que se actualizan semanalmente.
+- [ ] Ejemplos de capturas o gráficos que se actualizan en cada corte acumulado.
 
 ## 5. IA estratégica
 
@@ -91,9 +91,9 @@ No se requieren permisos de escritura durante la primera fase.
 
 ## 6. Reglas del informe
 
-- [ ] Día y hora de corte semanal.
+- [ ] Día y hora de la revisión operativa cada siete días.
 - [ ] Zona horaria oficial.
-- [ ] Periodo exacto: últimos 7 días o semana calendario.
+- [x] Periodo exacto: desde el día 1 del mes hasta la fecha y hora de generación.
 - [ ] Lista inicial de clientes y aliases.
 - [ ] Metas por cliente y campaña.
 - [ ] Convención del nombre del archivo.

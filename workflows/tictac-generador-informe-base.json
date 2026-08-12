@@ -5,81 +5,519 @@
       "parameters": {
         "workflowInputs": {
           "values": [
-            { "name": "customerPhone" },
-            { "name": "clientId" },
-            { "name": "clientName" }
+            {
+              "name": "customerPhone"
+            },
+            {
+              "name": "clientId"
+            },
+            {
+              "name": "clientName"
+            }
           ]
         }
       },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "id": "b1111111-1111-4111-8111-111111111111",
       "name": "Entrada desde Router"
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst periodEnd = new Date();\nconst periodStart = new Date(periodEnd);\nperiodStart.setUTCDate(periodStart.getUTCDate() - 7);\nconst clientConfig = { clientId: input.clientId || 'CLI-001', clientName: input.clientName || 'Proyecto Pekín', hubspotCompanyId: '<CONFIGURE_HUBSPOT_COMPANY_ID>', slidesTemplateId: '16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0', driveFolderId: '<CONFIGURE_GOOGLE_DRIVE_FOLDER_ID>', weeklyLeadGoal: 100, weeklyInvestmentGoal: 5000000, timezone: 'America/Bogota' };\nreturn [{ json: { ...input, ...clientConfig, periodStart: periodStart.toISOString(), periodEnd: periodEnd.toISOString() } }];"
+        "jsCode": "const input = $input.first().json;\nconst timezone = 'America/Bogota';\nconst periodEnd = new Date();\nconst localParts = Object.fromEntries(\n  new Intl.DateTimeFormat('en-CA', {\n    timeZone: timezone,\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit'\n  }).formatToParts(periodEnd)\n    .filter((part) => part.type !== 'literal')\n    .map((part) => [part.type, part.value])\n);\nconst periodStartDate = `${localParts.year}-${localParts.month}-01`;\nconst periodEndDate = `${localParts.year}-${localParts.month}-${localParts.day}`;\nconst periodStart = new Date(`${periodStartDate}T00:00:00-05:00`);\nconst periodDaysElapsed = Number(localParts.day);\nconst formatPeriodDate = (date) => new Intl.DateTimeFormat('es-CO', {\n  timeZone: 'UTC',\n  day: 'numeric',\n  month: 'long',\n  year: 'numeric'\n}).format(new Date(`${date}T12:00:00Z`));\nconst periodLabel = `${formatPeriodDate(periodStartDate)} al ${formatPeriodDate(periodEndDate)}`;\nconst reportingContract = {\n  version: '1.0',\n  mode: 'MONTH_TO_DATE',\n  cadenceDays: 7,\n  timezone,\n  periodStartDate,\n  periodEndDate,\n  periodStart: periodStart.toISOString(),\n  periodEnd: periodEnd.toISOString(),\n  daysElapsed: periodDaysElapsed,\n  accumulationStrategy: 'SOURCE_REQUERY_NO_ROLLUP'\n};\nconst clientConfig = {\n  clientId: input.clientId || 'CLI-001',\n  clientName: input.clientName || 'Proyecto Pekín',\n  hubspotCompanyId: '<CONFIGURE_HUBSPOT_COMPANY_ID>',\n  slidesTemplateId: '16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0',\n  driveFolderId: '<CONFIGURE_GOOGLE_DRIVE_FOLDER_ID>',\n  periodLeadGoal: 100,\n  periodInvestmentGoal: 5000000,\n  timezone\n};\nreturn [{ json: {\n  ...input,\n  ...clientConfig,\n  periodMode: reportingContract.mode,\n  reportCadenceDays: reportingContract.cadenceDays,\n  periodStartDate,\n  periodEndDate,\n  periodStart: reportingContract.periodStart,\n  periodEnd: reportingContract.periodEnd,\n  periodDaysElapsed,\n  periodLabel,\n  reportingContract\n} }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [240, 0],
+      "position": [
+        240,
+        0
+      ],
       "id": "b2222222-2222-4222-8222-222222222222",
       "name": "Cargar Configuración Temporal"
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst metrics = {\n  recognition: { kpi: 125000, actual: 14014, performance: 11.21, budget: 500000, investment: 48732 },\n  investors: { kpi: 120, leads: 62, performance: 51.67, budget: 1200000, investment: 288141, cpa: 5145 },\n  housing: { kpi: 40, leads: 17, performance: 42.50, budget: 400000, investment: 97517, cpa: 5736 },\n  studio: { investment: 95888, leads: 6, cpa: 15981 },\n  pmax: { kpi: 30, leads: 24, performance: 80.00, budget: 1200000, investment: 381000 },\n  totals: { targetLeads: 190, generatedLeads: 103, performance: 54.21, remainder: 2388801 },\n  leadsRegistered: 103,\n  mqls: 41,\n  noNicho: 12,\n  pendingClassification: 8,\n  sales: 5,\n  actualInvestment: 4650000\n};\nconst leadAchievement = Number(((metrics.leadsRegistered / input.weeklyLeadGoal) * 100).toFixed(1));\nconst cpl = Math.round(metrics.actualInvestment / metrics.leadsRegistered);\nreturn [{ json: { ...input, ...metrics, leadAchievement, cpl, dataSource: 'mock' } }];"
+        "jsCode": "const input = $input.first().json;\nconst metrics = {\n  recognition: { kpi: 125000, actual: 14014, performance: 11.21, budget: 500000, investment: 48732 },\n  investors: { kpi: 120, leads: 62, performance: 51.67, budget: 1200000, investment: 288141, cpa: 5145 },\n  housing: { kpi: 40, leads: 17, performance: 42.50, budget: 400000, investment: 97517, cpa: 5736 },\n  studio: { investment: 95888, leads: 6, cpa: 15981 },\n  pmax: { kpi: 30, leads: 24, performance: 80.00, budget: 1200000, investment: 381000 },\n  totals: { targetLeads: 190, generatedLeads: 103, performance: 54.21, remainder: 2388801 },\n  leadsRegistered: 103,\n  mqls: 41,\n  noNicho: 12,\n  pendingClassification: 8,\n  sales: 5,\n  actualInvestment: 4650000\n};\nconst leadAchievement = Number(((metrics.leadsRegistered / input.periodLeadGoal) * 100).toFixed(1));\nconst cpl = Math.round(metrics.actualInvestment / metrics.leadsRegistered);\nreturn [{ json: { ...input, ...metrics, leadAchievement, cpl, dataSource: 'mock' } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [480, 0],
+      "position": [
+        480,
+        0
+      ],
       "id": "b3333333-3333-4333-8333-333333333333",
       "name": "Recolectar Datos Simulados"
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst strategicCopy = { ANALISIS_TENDENCIA_VIVIENDA: `Durante el período observamos ${input.leadsRegistered} registros, equivalentes al ${input.leadAchievement}% de la meta semanal.`, RECOMENDACION_AGENCIA_VIVIENDA: `Desde la agencia, consideramos prioritario mantener la optimización de audiencias y creatividades para sostener un CPL cercano a $${input.cpl.toLocaleString('es-CO')}.`, SINTESIS_EMBUDO: `El embudo registra ${input.mqls} MQL, ${input.pendingClassification} contactos pendientes de clasificación y ${input.sales} ventas.` };\nreturn [{ json: { ...input, strategicCopy, aiSource: 'mock' } }];"
+        "jsCode": "const input = $input.first().json;\nconst metricsForAI = {\n  project: input.clientName,\n  reportingContract: input.reportingContract,\n  periodLabel: input.periodLabel,\n  periodLeadGoal: input.periodLeadGoal,\n  periodInvestmentGoal: input.periodInvestmentGoal,\n  recognition: input.recognition,\n  investors: input.investors,\n  housing: input.housing,\n  studio: input.studio,\n  pmax: input.pmax,\n  totals: input.totals,\n  crm: { leadsRegistered: input.leadsRegistered, mqls: input.mqls, noNicho: input.noNicho, pendingClassification: input.pendingClassification, sales: input.sales },\n  leadAchievement: input.leadAchievement,\n  cpl: input.cpl,\n  actualInvestment: input.actualInvestment\n};\nconst prompt = [\n  'Actua como analista senior de performance de Tic Tac Agency.',\n  'Analiza exclusivamente los datos suministrados. No inventes cifras, causas ni resultados.',\n  'Todos los datos representan el acumulado del mes desde el dia 1 hasta el momento de generacion indicado en reportingContract.',\n  'No describas los datos como ultimos 7 dias ni como una semana aislada. La revision ocurre cada 7 dias, pero el periodo siempre es MONTH_TO_DATE.',\n  'Redacta en espanol ejecutivo de Colombia, claro, breve, formal, proactivo y orientado a decisiones.',\n  'Cada texto debe tener entre 35 y 70 palabras y no debe usar Markdown.',\n  'ANALISIS_TENDENCIA_VIVIENDA: explica los resultados principales, cumplimiento, eficiencia y tendencia acumulada del mes.',\n  'RECOMENDACION_AGENCIA_VIVIENDA: propone acciones concretas y prudentes para el proximo corte acumulado.',\n  'SINTESIS_EMBUDO: resume calidad y avance acumulado del embudo CRM, mencionando MQL, pendientes y ventas.',\n  'Devuelve solamente el objeto JSON solicitado.',\n  `DATOS DEL PERIODO:\\n${JSON.stringify(metricsForAI)}`\n].join('\\n\\n');\nconst geminiRequestBody = {\n  contents: [{ role: 'user', parts: [{ text: prompt }] }],\n  generationConfig: {\n    temperature: 0.25,\n    topP: 0.8,\n    maxOutputTokens: 700,\n    responseMimeType: 'application/json',\n    responseJsonSchema: {\n      type: 'object',\n      additionalProperties: false,\n      required: ['ANALISIS_TENDENCIA_VIVIENDA', 'RECOMENDACION_AGENCIA_VIVIENDA', 'SINTESIS_EMBUDO'],\n      properties: {\n        ANALISIS_TENDENCIA_VIVIENDA: { type: 'string' },\n        RECOMENDACION_AGENCIA_VIVIENDA: { type: 'string' },\n        SINTESIS_EMBUDO: { type: 'string' }\n      }\n    }\n  }\n};\nreturn [{ json: { ...input, geminiRequestBody } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [720, 0],
+      "position": [
+        1200,
+        0
+      ],
       "id": "b4444444-4444-4444-8444-444444444444",
-      "name": "Generar Análisis Simulado"
+      "name": "Preparar Solicitud Gemini"
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst number = (value) => Number(value).toLocaleString('en-US');\nconst money = (value) => `$${number(value)}`;\nconst pct = (value) => `${Number(value).toFixed(2)}%`;\nconst replacements = {\n  '{{NOMBRE_PROYECTO_MAYUS}}': input.clientName.toUpperCase(),\n  '{{META_RECONOCIMIENTO_KPI}}': number(input.recognition.kpi),\n  '{{META_RECONOCIMIENTO_REAL}}': number(input.recognition.actual),\n  '{{META_RECONOCIMIENTO_PERFORMANCE}}': pct(input.recognition.performance),\n  '{{META_RECONOCIMIENTO_PRESUPUESTO}}': money(input.recognition.budget),\n  '{{META_RECONOCIMIENTO_INVERSION}}': money(input.recognition.investment),\n  '{{META_INVERSIONISTAS_KPI}}': number(input.investors.kpi),\n  '{{META_INVERSIONISTAS_LEADS}}': number(input.investors.leads),\n  '{{META_INVERSIONISTAS_PERFORMANCE}}': pct(input.investors.performance),\n  '{{META_INVERSIONISTAS_PRESUPUESTO}}': money(input.investors.budget),\n  '{{META_INVERSIONISTAS_INVERSION}}': money(input.investors.investment),\n  '{{META_INVERSIONISTAS_CPA}}': money(input.investors.cpa),\n  '{{META_VIVIENDA_KPI}}': number(input.housing.kpi),\n  '{{META_VIVIENDA_LEADS}}': number(input.housing.leads),\n  '{{META_VIVIENDA_PERFORMANCE}}': pct(input.housing.performance),\n  '{{META_VIVIENDA_PRESUPUESTO}}': money(input.housing.budget),\n  '{{META_VIVIENDA_INVERSION}}': money(input.housing.investment),\n  '{{META_VIVIENDA_CPA}}': money(input.housing.cpa),\n  '{{META_APARTAESTUDIO_INVERSION}}': money(input.studio.investment),\n  '{{META_APARTAESTUDIO_LEADS}}': number(input.studio.leads),\n  '{{META_APARTAESTUDIO_CPA}}': money(input.studio.cpa),\n  '{{GOOGLE_PMAX_KPI}}': number(input.pmax.kpi),\n  '{{GOOGLE_PMAX_LEADS}}': number(input.pmax.leads),\n  '{{GOOGLE_PMAX_PERFORMANCE}}': pct(input.pmax.performance),\n  '{{GOOGLE_PMAX_PRESUPUESTO}}': money(input.pmax.budget),\n  '{{GOOGLE_PMAX_INVERSION}}': money(input.pmax.investment),\n  '{{TOTAL_META_LEADS}}': number(input.totals.targetLeads),\n  '{{TOTAL_LEADS_GENERADOS}}': number(input.totals.generatedLeads),\n  '{{TOTAL_PERFORMANCE}}': pct(input.totals.performance),\n  '{{TOTAL_REMANENTE}}': money(input.totals.remainder),\n  '{{LEADS_REGISTRADOS}}': number(input.leadsRegistered),\n  '{{MQLS}}': number(input.mqls),\n  '{{NO_NICHO}}': number(input.noNicho),\n  '{{PENDIENTES}}': number(input.pendingClassification),\n  '{{VENTAS}}': number(input.sales),\n  '{{SINTESIS_EMBUDO}}': input.strategicCopy.SINTESIS_EMBUDO\n};\nreturn [{ json: { ...input, replacements, reportStatus: 'mock_ready', reportUrl: '<GENERATED_GOOGLE_SLIDES_URL>' } }];"
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { ...$json.geminiRequestBody, \"generationConfig\": { ...$json.geminiRequestBody.generationConfig, \"maxOutputTokens\": 2048, \"thinkingConfig\": { \"thinkingLevel\": \"low\" } } } }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "b4555555-5555-4555-8555-555555555555",
+      "name": "Generar Analisis con Gemini",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "P7ZwZBfxEAmLeZnO",
+          "name": "Gemini API - Tic Tac"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $('Preparar Solicitud Gemini').first().json;\nconst response = $input.first().json;\nconst candidate = response.candidates?.[0];\nconst finishReason = candidate?.finishReason || 'UNKNOWN';\nconst text = candidate?.content?.parts?.map((part) => part.text || '').join('').trim();\nif (!text) {\n  const blockReason = response.promptFeedback?.blockReason || 'sin detalle';\n  throw new Error(`Gemini no devolvio contenido. finishReason=${finishReason}; blockReason=${blockReason}`);\n}\nlet strategicCopy;\ntry {\n  strategicCopy = JSON.parse(text);\n} catch (error) {\n  throw new Error(`Gemini devolvio JSON invalido: ${error.message}`);\n}\nconst required = ['ANALISIS_TENDENCIA_VIVIENDA', 'RECOMENDACION_AGENCIA_VIVIENDA', 'SINTESIS_EMBUDO'];\nfor (const field of required) {\n  if (typeof strategicCopy[field] !== 'string' || !strategicCopy[field].trim()) {\n    throw new Error(`Respuesta Gemini incompleta: falta ${field}`);\n  }\n  strategicCopy[field] = strategicCopy[field].trim();\n}\nconst { geminiRequestBody, ...cleanSource } = source;\nreturn [{ json: { ...cleanSource, strategicCopy, aiSource: 'gemini-3.5-flash', geminiUsage: response.usageMetadata || null } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [960, 0],
+      "position": [
+        1680,
+        0
+      ],
+      "id": "b4666666-6666-4666-8666-666666666666",
+      "name": "Validar Analisis Gemini"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst number = (value) => Number(value).toLocaleString('en-US');\nconst money = (value) => `$${number(value)}`;\nconst pct = (value) => `${Number(value).toFixed(2)}%`;\nconst google = input.googleAds || {};\nconst googleAdsAnalysis = `En el acumulado mensual del ${input.periodLabel}, la campaña ${google.campaignName || 'PMAX'} registró ${number(google.impressions || 0)} impresiones, ${number(google.interactions || 0)} interacciones y ${number(google.conversions || 0)} conversiones con una inversión de ${money(google.investment || 0)}. El costo promedio por conversión fue ${money(google.cpa || 0)} y el cumplimiento frente al KPI configurado de ${number(input.pmax.kpi)} conversiones alcanzó ${pct(input.pmax.performance)}. Los datos provienen directamente de Google Ads.`;\nconst googleAdsRecommendation = `Para el próximo corte acumulado recomendamos mantener la pauta activa y monitorear diariamente el costo por conversión, la calidad de los formularios y la distribución del presupuesto mensual. Antes de ampliar inversión, conviene confirmar en el CRM que las ${number(google.conversions || 0)} conversiones acumuladas corresponden a oportunidades válidas y ajustar creatividades o segmentación solo con evidencia de varios cortes del mismo mes.`;\nconst replacements = {\n  '{{NOMBRE_PROYECTO_MAYUS}}': input.clientName.toUpperCase(),\n  '{{META_RECONOCIMIENTO_KPI}}': number(input.recognition.kpi),\n  '{{META_RECONOCIMIENTO_REAL}}': number(input.recognition.actual),\n  '{{META_RECONOCIMIENTO_PERFORMANCE}}': pct(input.recognition.performance),\n  '{{META_RECONOCIMIENTO_PRESUPUESTO}}': money(input.recognition.budget),\n  '{{META_RECONOCIMIENTO_INVERSION}}': money(input.recognition.investment),\n  '{{META_INVERSIONISTAS_KPI}}': number(input.investors.kpi),\n  '{{META_INVERSIONISTAS_LEADS}}': number(input.investors.leads),\n  '{{META_INVERSIONISTAS_PERFORMANCE}}': pct(input.investors.performance),\n  '{{META_INVERSIONISTAS_PRESUPUESTO}}': money(input.investors.budget),\n  '{{META_INVERSIONISTAS_INVERSION}}': money(input.investors.investment),\n  '{{META_INVERSIONISTAS_CPA}}': money(input.investors.cpa),\n  '{{META_VIVIENDA_KPI}}': number(input.housing.kpi),\n  '{{META_VIVIENDA_LEADS}}': number(input.housing.leads),\n  '{{META_VIVIENDA_PERFORMANCE}}': pct(input.housing.performance),\n  '{{META_VIVIENDA_PRESUPUESTO}}': money(input.housing.budget),\n  '{{META_VIVIENDA_INVERSION}}': money(input.housing.investment),\n  '{{META_VIVIENDA_CPA}}': money(input.housing.cpa),\n  '{{META_APARTAESTUDIO_INVERSION}}': money(input.studio.investment),\n  '{{META_APARTAESTUDIO_LEADS}}': number(input.studio.leads),\n  '{{META_APARTAESTUDIO_CPA}}': money(input.studio.cpa),\n  '{{GOOGLE_PMAX_KPI}}': number(input.pmax.kpi),\n  '{{GOOGLE_PMAX_LEADS}}': number(input.pmax.leads),\n  '{{GOOGLE_PMAX_PERFORMANCE}}': pct(input.pmax.performance),\n  '{{GOOGLE_PMAX_PRESUPUESTO}}': money(input.pmax.budget),\n  '{{GOOGLE_PMAX_INVERSION}}': money(input.pmax.investment),\n  '{{TOTAL_META_LEADS}}': number(input.totals.targetLeads),\n  '{{TOTAL_LEADS_GENERADOS}}': number(input.totals.generatedLeads),\n  '{{TOTAL_PERFORMANCE}}': pct(input.totals.performance),\n  '{{TOTAL_REMANENTE}}': money(input.totals.remainder),\n  '{{LEADS_REGISTRADOS}}': number(input.leadsRegistered),\n  '{{MQLS}}': number(input.mqls),\n  '{{NO_NICHO}}': number(input.noNicho),\n  '{{PENDIENTES}}': number(input.pendingClassification),\n  '{{VENTAS}}': number(input.sales),\n  '{{ANALISIS_TENDENCIA_VIVIENDA}}': input.strategicCopy.ANALISIS_TENDENCIA_VIVIENDA,\r\n  '{{RECOMENDACION_AGENCIA_VIVIENDA}}': input.strategicCopy.RECOMENDACION_AGENCIA_VIVIENDA,\r\n  '{{GOOGLE_ADS_ANALISIS}}': googleAdsAnalysis,\n  '{{GOOGLE_ADS_RECOMENDACION}}': googleAdsRecommendation,\n  '{{SINTESIS_EMBUDO}}': input.strategicCopy.SINTESIS_EMBUDO\n};\nreturn [{ json: { ...input, replacements, reportStatus: 'mixed_ready', reportUrl: '<GENERATED_GOOGLE_SLIDES_URL>' } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        0
+      ],
       "id": "b5555555-5555-4555-8555-555555555555",
       "name": "Preparar Placeholders de Slides"
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst divider = '\\u2501'.repeat(14);\nconst finalMessage = [\n  '\\u2705 *TIC TAC | INFORME COMPLETADO*',\n  divider,\n  `\\u{1F3E2} *Proyecto:* ${input.clientName}`,\n  `\\u{1F4CA} *Leads generados:* ${input.leadsRegistered}`,\n  `\\u{1F3AF} *Cumplimiento:* ${input.leadAchievement}%`,\n  `\\u{1F4B0} *CPL promedio:* $${input.cpl.toLocaleString('es-CO')}`,\n  '',\n  `\\u{1F4C1} *Ver informe:* ${input.reportUrl}`,\n  divider,\n  '\\u2139\\uFE0F _Versi\\u00f3n de prueba con datos simulados._',\n  '_Tic Tac Agency Performance SAS_'\n].join('\\n');\nreturn [{ json: { ...input, finalMessage } }];"
+        "method": "POST",
+        "url": "={{ 'https://www.googleapis.com/drive/v3/files/' + $json.slidesTemplateId + '/copy' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "supportsAllDrives",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"name\": \"Informe \" + $json.clientName + \" - \" + new Date().toLocaleDateString('es-CO', { timeZone: $json.timezone }) } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        192
+      ],
+      "id": "b5777777-7777-4777-8777-777777777777",
+      "name": "Copiar Plantilla en Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tLT297bB84V3jsXt",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $('Preparar Placeholders de Slides').first().json;\nconst copy = $input.first().json;\nif (!copy.id) throw new Error('Google Drive no devolvió el ID de la copia.');\nconst requests = Object.entries(source.replacements).map(([placeholder, value]) => ({\n  replaceAllText: {\n    containsText: { text: placeholder, matchCase: true },\n    replaceText: String(value ?? '')\n  }\n}));\nreturn [{ json: { ...source, presentationId: copy.id, copiedFileName: copy.name, batchUpdateBody: { requests } } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1200, 0],
+      "position": [
+        2016,
+        224
+      ],
+      "id": "b5888888-8888-4888-8888-888888888888",
+      "name": "Preparar Batch Update"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://slides.googleapis.com/v1/presentations/' + $json.presentationId + ':batchUpdate' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.batchUpdateBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2160,
+        0
+      ],
+      "id": "b5999999-9999-4999-8999-999999999999",
+      "name": "Reemplazar Placeholders en Slides",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tLT297bB84V3jsXt",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://www.googleapis.com/drive/v3/files/' + $('Preparar Batch Update').first().json.presentationId + '/permissions' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "supportsAllDrives",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"type\": \"anyone\", \"role\": \"reader\", \"allowFileDiscovery\": false } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        0
+      ],
+      "id": "b5a11111-1111-4111-8111-111111111111",
+      "name": "Publicar Informe como Lector",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tLT297bB84V3jsXt",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const prepared = $('Preparar Batch Update').first().json;\nconst slidesResponse = $input.first().json;\nconst reportUrl = `https://docs.google.com/presentation/d/${prepared.presentationId}/edit`;\nreturn [{ json: { ...prepared, slidesResponse, reportStatus: 'slides_ready', reportUrl } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        0
+      ],
+      "id": "b5aaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "name": "Preparar Enlace del Informe"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst divider = '\\u2501'.repeat(14);\nconst finalMessage = [\n  '\\u2705 *TIC TAC | INFORME COMPLETADO*',\n  divider,\n  `\\u{1F3E2} *Proyecto:* ${input.clientName}`,\n  `\\u{1F4C5} *Periodo acumulado:* ${input.periodLabel}`,\n  '\\u{1F504} *Contrato:* Desde el día 1 hasta este corte',\n  `\\u{1F4CA} *Leads generados:* ${input.leadsRegistered}`,\n  `\\u{1F3AF} *Cumplimiento:* ${input.leadAchievement}%`,\n  `\\u{1F4B0} *CPL promedio:* $${input.cpl.toLocaleString('es-CO')}`,\n  '',\n  `\\u{1F4C1} *Ver informe:* ${input.reportUrl}`,\n  divider,\n  '\\u2139\\uFE0F _Google Ads: datos reales. Meta Ads y CRM: datos simulados._',\n  '_Tic Tac Agency Performance SAS_'\n].join('\\n');\nreturn [{ json: { ...input, finalMessage } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        0
+      ],
       "id": "b6666666-6666-4666-8666-666666666666",
       "name": "Preparar Notificación Final"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"from\": \"+573118849896\", \"to\": $json.customerPhone, \"type\": \"text\", \"text\": { \"body\": $json.finalMessage } } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3120,
+        0
+      ],
+      "id": "b6bbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "name": "Enviar Informe por WhatsApp",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ehwaDX3NiWuIbcGc",
+          "name": "YCloud API - Tic Tac"
+        }
+      }
+    },
+    {
+      "id": "30093e78-8649-4000-b5d2-a0097152aeed",
+      "name": "Consultar Google Ads Kinku",
+      "type": "n8n-nodes-base.googleAds",
+      "typeVersion": 1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "managerCustomerId": "658-489-2239",
+        "operation": "getAll",
+        "resource": "campaign",
+        "additionalOptions": {
+          "campaignStatus": "ENABLED",
+          "dateRange": "THIS_MONTH"
+        },
+        "clientCustomerId": "924-069-6515"
+      },
+      "credentials": {
+        "googleAdsOAuth2Api": {
+          "id": "8VkXCbFRs3PzQrv1",
+          "name": "Google Ads - Tic Tac"
+        }
+      }
+    },
+    {
+      "id": "6291628f-5a75-454a-b8a0-35886745efa9",
+      "name": "Incorporar Google Ads Real",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const base = $('Recolectar Datos Simulados').first().json;\nconst campaigns = $input.all().map((item) => item.json);\nconst campaign = campaigns.find((row) => String(row.id) === '23823733646');\nif (!campaign) throw new Error('No se encontró la campaña PMAX de Kinku (23823733646).');\nconst microsToCop = (value) => Number(value || 0) / 1000000;\nconst leads = Number(campaign.conversions || 0);\nconst investment = microsToCop(campaign.costMicros);\nconst dailyBudget = microsToCop(campaign.amountMicros);\nconst periodDaysElapsed = Number(base.periodDaysElapsed || 1);\nconst periodBudget = dailyBudget * periodDaysElapsed;\nconst kpi = Number(base.pmax?.kpi || 30);\nconst performance = kpi > 0 ? Number(((leads / kpi) * 100).toFixed(2)) : 0;\nconst cpa = leads > 0 ? Math.round(investment / leads) : 0;\nreturn [{ json: {\n  ...base,\n  pmax: { ...base.pmax, kpi, leads, performance, budget: Number(periodBudget.toFixed(2)), investment: Number(investment.toFixed(2)), cpa },\n  googleAds: {\n    source: 'live', managerCustomerId: '6584892239', customerId: '9240696515',\n    campaignId: String(campaign.id), campaignName: campaign.name,\n    campaignType: campaign.advertisingChannelType, status: campaign.status,\n    dateRange: 'THIS_MONTH', periodMode: base.periodMode,\n    periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate,\n    periodStart: base.periodStart, periodEnd: base.periodEnd,\n    periodDaysElapsed, dailyBudget: Number(dailyBudget.toFixed(2)),\n    periodBudget: Number(periodBudget.toFixed(2)), impressions: Number(campaign.impressions || 0),\n    interactions: Number(campaign.interactions || 0), conversions: leads,\n    investment: Number(investment.toFixed(2)), cpa,\n    optimizationScore: Number(campaign.optimizationScore || 0)\n  },\n  dataSource: 'mixed',\n  dataSources: { googleAds: 'live', metaAds: 'mock', crm: 'mock' }\n} }];"
+      }
     }
   ],
   "connections": {
-    "Entrada desde Router": { "main": [[{ "node": "Cargar Configuración Temporal", "type": "main", "index": 0 }]] },
-    "Cargar Configuración Temporal": { "main": [[{ "node": "Recolectar Datos Simulados", "type": "main", "index": 0 }]] },
-    "Recolectar Datos Simulados": { "main": [[{ "node": "Generar Análisis Simulado", "type": "main", "index": 0 }]] },
-    "Generar Análisis Simulado": { "main": [[{ "node": "Preparar Placeholders de Slides", "type": "main", "index": 0 }]] },
-    "Preparar Placeholders de Slides": { "main": [[{ "node": "Preparar Notificación Final", "type": "main", "index": 0 }]] }
+    "Entrada desde Router": {
+      "main": [
+        [
+          {
+            "node": "Cargar Configuración Temporal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar Configuración Temporal": {
+      "main": [
+        [
+          {
+            "node": "Recolectar Datos Simulados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recolectar Datos Simulados": {
+      "main": [
+        [
+          {
+            "node": "Consultar Google Ads Kinku",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Solicitud Gemini": {
+      "main": [
+        [
+          {
+            "node": "Generar Analisis con Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Analisis con Gemini": {
+      "main": [
+        [
+          {
+            "node": "Validar Analisis Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Analisis Gemini": {
+      "main": [
+        [
+          {
+            "node": "Preparar Placeholders de Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Placeholders de Slides": {
+      "main": [
+        [
+          {
+            "node": "Copiar Plantilla en Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copiar Plantilla en Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Preparar Batch Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Batch Update": {
+      "main": [
+        [
+          {
+            "node": "Reemplazar Placeholders en Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reemplazar Placeholders en Slides": {
+      "main": [
+        [
+          {
+            "node": "Publicar Informe como Lector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar Informe como Lector": {
+      "main": [
+        [
+          {
+            "node": "Preparar Enlace del Informe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Enlace del Informe": {
+      "main": [
+        [
+          {
+            "node": "Preparar Notificación Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Notificación Final": {
+      "main": [
+        [
+          {
+            "node": "Enviar Informe por WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Google Ads Kinku": {
+      "main": [
+        [
+          {
+            "node": "Incorporar Google Ads Real",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Incorporar Google Ads Real": {
+      "main": [
+        [
+          {
+            "node": "Preparar Solicitud Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "pinData": {},
   "active": false,
-  "settings": { "executionOrder": "v1" },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
   "versionId": "b7777777-7777-4777-8777-777777777777",
-  "meta": { "templateCredsSetupCompleted": false },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
   "id": "tictac-generador-informe-template",
   "tags": []
 }
