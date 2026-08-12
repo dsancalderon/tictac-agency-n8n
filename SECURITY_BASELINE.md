@@ -1,15 +1,16 @@
 # Línea base de credenciales
 
-Última revisión: 2026-07-30
+Última revisión: 2026-08-12
 
 ## Estado confirmado
 
 - La instancia operativa es `https://n8n-gafas-antioquia.onrender.com`.
-- El workflow de producción existe, pero actualmente figura como inactivo.
+- La instancia conserva cuatro workflows productivos y todos figuran activos.
 - El repositorio ya ignora `.env`, archivos JSON de workflows y documentos `*_HANDOFF.md`.
 - Los workflows locales consumen `YCLOUD_API_KEY` desde el entorno en lugar de guardar su valor literal.
 - La clave de YCloud apareció en el historial Git y debe considerarse comprometida.
-- Los tokens de Meta y n8n estuvieron presentes en un handoff local. Aunque ese archivo no está versionado, deben rotarse por precaución.
+- Los tokens de Meta y n8n estuvieron presentes en un handoff histórico. Aunque ese archivo no está versionado, cualquier token histórico expuesto debe permanecer revocado.
+- Meta Ads usa la credencial cifrada `Meta Ads - Kinku`; el token no aparece en el workflow exportado ni en la documentación versionada.
 - Los webhooks actuales filtran tipos de evento, pero todavía no validan criptográficamente la firma del emisor.
 
 ## Fuente autorizada de cada secreto
@@ -26,13 +27,13 @@
 
 ## Orden de rotación sin interrumpir el servicio
 
-1. Mantener el workflow inactivo durante el cambio para evitar respuestas parciales.
+1. Programar una ventana controlada o usar pruebas manuales aisladas antes de modificar un workflow activo.
 2. Generar una nueva clave de YCloud sin revocar todavía la anterior.
 3. Guardar la nueva clave como `YCLOUD_API_KEY` en Render y desplegar.
 4. Confirmar desde n8n que el nodo de salida usa la variable de entorno y realizar una prueba controlada.
 5. Revocar la clave anterior de YCloud.
-6. Crear un token permanente/de sistema de Meta con privilegios mínimos, instalarlo en n8n y probar un envío.
-7. Revocar el token de Meta expuesto anteriormente.
+6. Mantener el token del usuario de sistema de Meta con privilegios mínimos (`ads_read`) dentro de la credencial cifrada de n8n.
+7. Revocar cualquier token histórico de Meta que haya sido expuesto anteriormente.
 8. Regenerar la API key administrativa de n8n y actualizar únicamente el almacén local autorizado.
 9. Rotar el secreto del webhook de YCloud e implementar validación de firma antes de reactivar producción.
 10. Activar el workflow y verificar un mensaje entrante, una confirmación de estado y un mensaje saliente.

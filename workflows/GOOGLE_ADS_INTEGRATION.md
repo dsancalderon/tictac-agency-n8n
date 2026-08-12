@@ -3,8 +3,8 @@
 ## Alcance
 
 Esta integración incorpora métricas reales de la campaña Performance Max de
-Kinku al generador de informes. El resto de las fuentes cuantitativas permanece
-simulado hasta conectar Meta Ads, HubSpot y la tabla maestra de metas.
+Kinku al generador de informes. Meta Ads también está conectado en producción;
+HubSpot y la tabla maestra de metas continúan pendientes.
 
 ## Recursos de producción
 
@@ -24,7 +24,7 @@ cifrada de n8n.
 ## Nodos y recorrido
 
 ```text
-Recolectar Datos Simulados
+Incorporar Meta Ads Real
   -> Consultar Google Ads Kinku
   -> Incorporar Google Ads Real
   -> Preparar Solicitud Gemini
@@ -77,8 +77,8 @@ El generador publica `reportingContract.version = 1.0` con estas reglas:
 
 Cada solicitud vuelve a consultar Google Ads desde el primer día del mes. No
 suma resultados guardados de cortes anteriores. En el próximo mes, el inicio se
-desplaza automáticamente al nuevo día 1. Meta Ads, HubSpot y Excel/Google Sheets
-deben consumir estos mismos límites cuando se conecten.
+desplaza automáticamente al nuevo día 1. Meta Ads ya consume estos mismos
+límites; HubSpot y Excel/Google Sheets deberán hacerlo cuando se conecten.
 
 ## Contrato de procedencia
 
@@ -89,7 +89,7 @@ La salida del nodo de normalización contiene:
   "dataSource": "mixed",
   "dataSources": {
     "googleAds": "live",
-    "metaAds": "mock",
+    "metaAds": "live",
     "crm": "mock"
   }
 }
@@ -178,8 +178,8 @@ El workflow temporal de esta validación fue desactivado y eliminado.
   las diapositivas de Google Ads no conservan capturas históricas.
 - WhatsApp: mensaje `6a7bfd776ea9423da69d432e`, estado `accepted`, costo
   USD 0, categoría `service`.
-- La notificación identifica Google Ads como fuente real y Meta Ads/CRM como
-  fuentes simuladas.
+- Desde la aceptación de Meta Ads `2711`, la notificación identifica Google Ads
+  y Meta Ads como fuentes reales y CRM como fuente simulada.
 - La versión de producción `9cf08ff0-36fa-481c-92d1-9f0892dff35b` aplica el
   contrato `MONTH_TO_DATE`; su consulta aislada posterior es la ejecución
   `2684`, estado `success`.

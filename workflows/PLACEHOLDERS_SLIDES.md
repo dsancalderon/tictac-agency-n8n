@@ -5,6 +5,8 @@
 - Plantilla nativa: `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`
 - Prueba 01 con datos simulados: `1tf8MWou9DzbaRKID0H-F1BjGRHlnV85LNYp2XX02KHE`
 - Respaldo anterior a placeholders: `1eZH0jKXCilcyjb1MzCMyq20OcJWZUJ3Dtb3wGs0RBLI`
+- Respaldo anterior a retirar gráficas históricas de Meta: `1p91OxRg2AAJ6o0abMbmMITiwlI9o0SbMY0nv49CIOl4`
+- Informe definitivo con Google Ads y Meta Ads reales: `1aVOc9xQ2VpHdTwqH5SWO62AvP6vk5_M3-OxP0lZgDbs`
 
 ## Alcance de la prueba
 
@@ -78,5 +80,6 @@
 
 - La plantilla conserva placeholders.
 - La copia de prueba contiene cero placeholders pendientes.
-- Las diapositivas 3, 4 y 17 se revisaron visualmente sin desbordamientos.
-- El generador activo de n8n contiene el ID de la plantilla y produce las 36 sustituciones.
+- Las diapositivas 3, 4, 5, 6, 15, 16 y 17 se revisaron visualmente sin desbordamientos.
+- Las gráficas históricas de julio se retiraron de las diapositivas 5 y 6; los análisis permanecen dinámicos.
+- El generador activo contiene 40 solicitudes de reemplazo. La aceptación `2711` cambió 47 ocurrencias y dejó cero placeholders residuales.

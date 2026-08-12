@@ -32,41 +32,41 @@ No se requieren permisos de escritura durante la primera fase.
 
 ### Acceso
 
-- [ ] Acceso al Business Manager.
-- [ ] ID del Business Manager.
-- [ ] ID de la cuenta publicitaria.
-- [ ] Token de usuario de sistema o integración.
-- [ ] Permiso `ads_read`.
-- [ ] Permiso para consultar insights y campañas.
-- [ ] Confirmar campañas asociadas a Proyecto Pekín.
+- [x] Acceso al Business Manager.
+- [x] ID del Business Manager: `355936969704127`.
+- [x] ID de la cuenta publicitaria: `act_302924541795503`.
+- [x] Token de usuario de sistema almacenado en la credencial cifrada `Meta Ads - Kinku`.
+- [x] Permiso `ads_read`.
+- [x] Permiso para consultar insights y campañas.
+- [x] Campañas de Proyecto Pekín confirmadas por ID.
 
 ### Definiciones
 
-- [ ] Campañas de Vivienda.
-- [ ] Campañas de Inversionistas.
-- [ ] Campañas de Apartaestudio.
-- [ ] Campañas de Reconocimiento / interacción.
-- [ ] Métrica que se considera lead.
-- [ ] Moneda y zona horaria de la cuenta.
+- [x] Vivienda: `120238960041500774`.
+- [x] Inversionistas: `120238954925180774`.
+- [x] Apartaestudio: `120247687053780774`.
+- [x] Reconocimiento / interacción: `120249557003280774`.
+- [x] Lead: acción `lead`; Reconocimiento: `post_engagement`.
+- [x] Moneda `COP` y zona horaria `America/Bogota`.
 - [ ] Desgloses requeridos: fecha, edad, género, plataforma y ubicación.
 
 ## 3. Google Ads
 
 ### Acceso
 
-- [ ] Customer ID de la cuenta.
-- [ ] Login Customer ID, si se utiliza una cuenta administradora MCC.
-- [ ] Developer Token de Google Ads API.
-- [ ] OAuth conectado a una cuenta con acceso.
-- [ ] Confirmar acceso a las campañas de Proyecto Pekín.
+- [x] Customer ID: `924-069-6515`.
+- [x] Login Customer ID / MCC: `658-489-2239`.
+- [x] Developer Token instalado dentro de la credencial cifrada.
+- [x] OAuth conectado a una cuenta con acceso.
+- [x] Campaña PMAX de Proyecto Pekín confirmada.
 
 ### Definiciones
 
-- [ ] Campañas PMAX incluidas.
-- [ ] Acción de conversión que debe contabilizarse.
-- [ ] Métricas: inversión, impresiones, clics, conversiones y costo por conversión.
+- [x] PMAX incluida: `23823733646`.
+- [x] Conversión principal validada: formulario de clientes potenciales.
+- [x] Inversión, impresiones, interacciones, conversiones y costo por conversión.
 - [ ] Datos de subasta requeridos.
-- [ ] Zona horaria y moneda.
+- [x] Zona horaria y moneda validadas en la cuenta.
 
 ## 4. Google Sheets y archivos operativos
 
@@ -81,10 +81,10 @@ No se requieren permisos de escritura durante la primera fase.
 
 ## 5. IA estratégica
 
-- [ ] Definir Gemini u OpenAI.
-- [ ] API key por un canal seguro.
+- [x] Gemini definido.
+- [x] API key guardada en la credencial cifrada `Gemini API - Tic Tac`.
 - [ ] Cuenta responsable de consumo y facturación.
-- [ ] Modelo autorizado.
+- [x] Modelo autorizado: `gemini-3.5-flash`.
 - [ ] Límite mensual de uso.
 - [ ] Ejemplos de redacción aprobada por Nicolás.
 - [ ] Palabras, afirmaciones o recomendaciones que deben evitarse.
@@ -92,22 +92,22 @@ No se requieren permisos de escritura durante la primera fase.
 ## 6. Reglas del informe
 
 - [ ] Día y hora de la revisión operativa cada siete días.
-- [ ] Zona horaria oficial.
+- [x] Zona horaria oficial: `America/Bogota`.
 - [x] Periodo exacto: desde el día 1 del mes hasta la fecha y hora de generación.
-- [ ] Lista inicial de clientes y aliases.
+- [x] Cliente inicial y aliases configurados para Proyecto Pekín/Kinku.
 - [ ] Metas por cliente y campaña.
 - [ ] Convención del nombre del archivo.
 - [ ] Carpeta de destino por cliente.
-- [ ] Entrega como enlace, PDF, presentación o combinación.
-- [ ] Destinatarios autorizados por WhatsApp.
+- [x] Entrega como enlace de Google Slides con permiso de lector.
+- [x] Destinatarios autorizados por WhatsApp configurados.
 - [ ] Tratamiento cuando falten datos.
 - [ ] Persona que aprueba el informe antes de enviarlo al cliente.
 
 ## 7. Seguridad
 
-- [ ] No compartir contraseñas personales.
-- [ ] Usar OAuth, Private Apps, usuarios de sistema o tokens revocables.
-- [ ] Aplicar permisos mínimos de lectura.
+- [x] No compartir contraseñas personales.
+- [x] Usar OAuth, Private Apps, usuarios de sistema o tokens revocables.
+- [x] Aplicar permisos mínimos de lectura.
 - [ ] Definir responsable de rotar tokens.
-- [ ] Guardar secretos únicamente en credenciales de n8n o variables de Render.
-- [ ] No subir secretos al repositorio.
+- [x] Guardar secretos únicamente en credenciales de n8n o variables de Render.
+- [x] No subir secretos al repositorio.

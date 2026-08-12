@@ -28,7 +28,8 @@ El generador combina fuentes reales y simuladas. Cada salida conserva el campo
 | Flujo o nodo | Estado |
 | --- | --- |
 | Cargar Configuración Temporal | Google Sheets / tabla maestra |
-| Recolectar Datos Simulados | Meta Ads y CRM continúan simulados hasta conectar sus APIs |
+| Recolectar Datos Simulados | Conserva configuración temporal y CRM simulado |
+| Consultar Insights Meta Kinku → Consultar Presupuestos Meta Kinku → Incorporar Meta Ads Real | Producción: Meta Ads real para Reconocimiento, Inversionistas, Vivienda y Apartaestudios |
 | Consultar Google Ads Kinku → Incorporar Google Ads Real | Producción: Google Ads real para la PMAX de Kinku |
 | Preparar Solicitud Gemini → Generar Analisis con Gemini → Validar Analisis Gemini | Configurado con Gemini 3.5 Flash, salida JSON validada y hasta 3 intentos ante fallos temporales |
 | Copiar y completar Google Slides | Configurado con la credencial `Google Drive account`; usa el conjunto mixto de datos |
@@ -90,7 +91,7 @@ rollback están en `GOOGLE_ADS_INTEGRATION.md`.
    - `Validar Analisis Gemini`
 7. Confirmar que la salida contiene `aiSource: gemini-3.5-flash` y los tres textos de `strategicCopy`.
 
-El workflow usa una credencial cifrada para el encabezado `x-goog-api-key`, respuesta JSON estructurada y validación obligatoria antes de crear la presentación. Google Ads usa datos reales; Meta Ads y CRM continúan simulados.
+El workflow usa una credencial cifrada para el encabezado `x-goog-api-key`, respuesta JSON estructurada y validación obligatoria antes de crear la presentación. Google Ads y Meta Ads usan datos reales; CRM continúa simulado.
 
 ## Prueba real de Google Slides
 
@@ -104,7 +105,7 @@ El workflow usa una credencial cifrada para el encabezado `x-goog-api-key`, resp
 - Cada copia recibe el permiso `cualquier persona con el enlace: lector`, sin permitir edición ni aparecer en búsquedas públicas.
 - Mientras no exista una carpeta final compartida, las copias quedan en la raíz de Mi unidad de la cuenta conectada.
 - Después del mensaje de confirmación, Meta muestra el indicador de escritura durante el procesamiento; se apaga con la respuesta final o a los 25 segundos.
-- La notificación final declara explícitamente: `Google Ads: datos reales. Meta Ads y CRM: datos simulados.`
+- La notificación final declara explícitamente: `Google Ads y Meta Ads: datos reales. CRM: datos simulados.`
 
 La aceptación definitiva del 12 de agosto de 2026 corresponde a la ejecución
 `2681`: 16 nodos exitosos, 47 ocurrencias reemplazadas, ningún placeholder
@@ -115,6 +116,26 @@ El contrato `MONTH_TO_DATE` se validó posteriormente en la ejecución aislada
 `2684`: periodo del 1 al 12 de agosto de 2026, 12 días transcurridos, rango
 `THIS_MONTH`, presupuesto acumulado COP 240.000 sobre COP 20.000 diarios y cinco
 nodos exitosos. El workflow temporal se eliminó al finalizar.
+
+## Meta Ads: Kinku
+
+- Business Manager: `355936969704127`.
+- Cuenta publicitaria: `act_302924541795503`.
+- Credencial cifrada en n8n: `Meta Ads - Kinku` (`httpHeaderAuth`).
+- Moneda y zona horaria confirmadas por API: `COP`, `America/Bogota`.
+- Rango: `periodStartDate` a `periodEndDate`, bajo el contrato `MONTH_TO_DATE`.
+- Leads: acción `lead`; Reconocimiento: acción `post_engagement`.
+- La integración selecciona cuatro campañas por ID y detiene el informe si falta un insight o presupuesto esperado.
+- El presupuesto acumulado usa el presupuesto diario vigente por `periodDaysElapsed`; Meta no devuelve en esta consulta el historial de cambios de presupuesto.
+
+La aceptación definitiva corresponde a la ejecución `2711`: 19 nodos exitosos,
+40 solicitudes, 47 ocurrencias reemplazadas, cero placeholders residuales y
+WhatsApp aceptado. El informe validado es:
+`https://docs.google.com/presentation/d/1aVOc9xQ2VpHdTwqH5SWO62AvP6vk5_M3-OxP0lZgDbs/edit`.
+
+La plantilla eliminó dos gráficas históricas de julio en las diapositivas 5 y
+6. Su respaldo previo es `1p91OxRg2AAJ6o0abMbmMITiwlI9o0SbMY0nv49CIOl4`.
+La especificación completa está en `META_ADS_INTEGRATION.md`.
 
 ## Pruebas mínimas
 

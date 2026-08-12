@@ -255,7 +255,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst divider = '\\u2501'.repeat(14);\nconst finalMessage = [\n  '\\u2705 *TIC TAC | INFORME COMPLETADO*',\n  divider,\n  `\\u{1F3E2} *Proyecto:* ${input.clientName}`,\n  `\\u{1F4C5} *Periodo acumulado:* ${input.periodLabel}`,\n  '\\u{1F504} *Contrato:* Desde el día 1 hasta este corte',\n  `\\u{1F4CA} *Leads generados:* ${input.leadsRegistered}`,\n  `\\u{1F3AF} *Cumplimiento:* ${input.leadAchievement}%`,\n  `\\u{1F4B0} *CPL promedio:* $${input.cpl.toLocaleString('es-CO')}`,\n  '',\n  `\\u{1F4C1} *Ver informe:* ${input.reportUrl}`,\n  divider,\n  '\\u2139\\uFE0F _Google Ads: datos reales. Meta Ads y CRM: datos simulados._',\n  '_Tic Tac Agency Performance SAS_'\n].join('\\n');\nreturn [{ json: { ...input, finalMessage } }];"
+        "jsCode": "const input = $input.first().json;\nconst divider = '\\u2501'.repeat(14);\nconst finalMessage = [\n  '\\u2705 *TIC TAC | INFORME COMPLETADO*',\n  divider,\n  `\\u{1F3E2} *Proyecto:* ${input.clientName}`,\n  `\\u{1F4C5} *Periodo acumulado:* ${input.periodLabel}`,\n  '\\u{1F504} *Contrato:* Desde el día 1 hasta este corte',\n  `\\u{1F4CA} *Leads generados:* ${input.leadsRegistered}`,\n  `\\u{1F3AF} *Cumplimiento:* ${input.leadAchievement}%`,\n  `\\u{1F4B0} *CPL promedio:* $${input.cpl.toLocaleString('es-CO')}`,\n  '',\n  `\\u{1F4C1} *Ver informe:* ${input.reportUrl}`,\n  divider,\n  '\\u2139\\uFE0F _Google Ads y Meta Ads: datos reales. CRM: datos simulados._',\n  '_Tic Tac Agency Performance SAS_'\n].join('\\n');\nreturn [{ json: { ...input, finalMessage } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -337,7 +337,98 @@
         0
       ],
       "parameters": {
-        "jsCode": "const base = $('Recolectar Datos Simulados').first().json;\nconst campaigns = $input.all().map((item) => item.json);\nconst campaign = campaigns.find((row) => String(row.id) === '23823733646');\nif (!campaign) throw new Error('No se encontró la campaña PMAX de Kinku (23823733646).');\nconst microsToCop = (value) => Number(value || 0) / 1000000;\nconst leads = Number(campaign.conversions || 0);\nconst investment = microsToCop(campaign.costMicros);\nconst dailyBudget = microsToCop(campaign.amountMicros);\nconst periodDaysElapsed = Number(base.periodDaysElapsed || 1);\nconst periodBudget = dailyBudget * periodDaysElapsed;\nconst kpi = Number(base.pmax?.kpi || 30);\nconst performance = kpi > 0 ? Number(((leads / kpi) * 100).toFixed(2)) : 0;\nconst cpa = leads > 0 ? Math.round(investment / leads) : 0;\nreturn [{ json: {\n  ...base,\n  pmax: { ...base.pmax, kpi, leads, performance, budget: Number(periodBudget.toFixed(2)), investment: Number(investment.toFixed(2)), cpa },\n  googleAds: {\n    source: 'live', managerCustomerId: '6584892239', customerId: '9240696515',\n    campaignId: String(campaign.id), campaignName: campaign.name,\n    campaignType: campaign.advertisingChannelType, status: campaign.status,\n    dateRange: 'THIS_MONTH', periodMode: base.periodMode,\n    periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate,\n    periodStart: base.periodStart, periodEnd: base.periodEnd,\n    periodDaysElapsed, dailyBudget: Number(dailyBudget.toFixed(2)),\n    periodBudget: Number(periodBudget.toFixed(2)), impressions: Number(campaign.impressions || 0),\n    interactions: Number(campaign.interactions || 0), conversions: leads,\n    investment: Number(investment.toFixed(2)), cpa,\n    optimizationScore: Number(campaign.optimizationScore || 0)\n  },\n  dataSource: 'mixed',\n  dataSources: { googleAds: 'live', metaAds: 'mock', crm: 'mock' }\n} }];"
+        "jsCode": "const base = $('Incorporar Meta Ads Real').first().json;\nconst campaigns = $input.all().map((item) => item.json);\nconst campaign = campaigns.find((row) => String(row.id) === '23823733646');\nif (!campaign) throw new Error('No se encontró la campaña PMAX de Kinku (23823733646).');\nconst microsToCop = (value) => Number(value || 0) / 1000000;\nconst leads = Number(campaign.conversions || 0);\nconst investment = microsToCop(campaign.costMicros);\nconst dailyBudget = microsToCop(campaign.amountMicros);\nconst periodDaysElapsed = Number(base.periodDaysElapsed || 1);\nconst periodBudget = dailyBudget * periodDaysElapsed;\nconst kpi = Number(base.pmax?.kpi || 30);\nconst performance = kpi > 0 ? Number(((leads / kpi) * 100).toFixed(2)) : 0;\nconst cpa = leads > 0 ? Math.round(investment / leads) : 0;\nreturn [{ json: {\n  ...base,\n  pmax: { ...base.pmax, kpi, leads, performance, budget: Number(periodBudget.toFixed(2)), investment: Number(investment.toFixed(2)), cpa },\n  googleAds: {\n    source: 'live', managerCustomerId: '6584892239', customerId: '9240696515',\n    campaignId: String(campaign.id), campaignName: campaign.name,\n    campaignType: campaign.advertisingChannelType, status: campaign.status,\n    dateRange: 'THIS_MONTH', periodMode: base.periodMode,\n    periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate,\n    periodStart: base.periodStart, periodEnd: base.periodEnd,\n    periodDaysElapsed, dailyBudget: Number(dailyBudget.toFixed(2)),\n    periodBudget: Number(periodBudget.toFixed(2)), impressions: Number(campaign.impressions || 0),\n    interactions: Number(campaign.interactions || 0), conversions: leads,\n    investment: Number(investment.toFixed(2)), cpa,\n    optimizationScore: Number(campaign.optimizationScore || 0)\n  },\n  dataSource: 'mixed',\n  dataSources: { ...base.dataSources, googleAds: 'live', metaAds: 'live', crm: 'mock' }\n} }];"
+      }
+    },
+    {
+      "id": "99d41a49-e1b0-46db-a466-8759b4f59901",
+      "name": "Consultar Insights Meta Kinku",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        224
+      ],
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "https://graph.facebook.com/v26.0/act_302924541795503/insights",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "campaign"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_id,campaign_name,objective,spend,impressions,reach,actions"
+            },
+            {
+              "name": "time_range",
+              "value": "={{ JSON.stringify({ since: $('Recolectar Datos Simulados').first().json.periodStartDate, until: $('Recolectar Datos Simulados').first().json.periodEndDate }) }}"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "b5gD05i329cq7iKG",
+          "name": "Meta Ads - Kinku"
+        }
+      }
+    },
+    {
+      "id": "68b391ba-1fa8-4194-aec3-f653a273bf8f",
+      "name": "Consultar Presupuestos Meta Kinku",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        840,
+        224
+      ],
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "https://graph.facebook.com/v26.0/act_302924541795503/campaigns",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "id,name,status,effective_status,daily_budget,lifetime_budget,budget_remaining"
+            },
+            {
+              "name": "limit",
+              "value": "500"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "b5gD05i329cq7iKG",
+          "name": "Meta Ads - Kinku"
+        }
+      }
+    },
+    {
+      "id": "d5857d26-ee0e-4bea-8514-f7544abf1e56",
+      "name": "Incorporar Meta Ads Real",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        224
+      ],
+      "parameters": {
+        "jsCode": "const base = $('Recolectar Datos Simulados').first().json;\nconst insights = $('Consultar Insights Meta Kinku').first().json.data || [];\nconst budgets = $input.first().json.data || [];\nconst ids = {\n  recognition: '120249557003280774',\n  investors: '120238954925180774',\n  housing: '120238960041500774',\n  studio: '120247687053780774'\n};\nconst byId = (rows, id) => rows.find((row) => String(row.campaign_id || row.id) === id);\nconst actionValue = (row, type) => Number((row.actions || []).find((action) => action.action_type === type)?.value || 0);\nconst metric = (key, actionType, withKpi = true) => {\n  const insight = byId(insights, ids[key]);\n  const campaign = byId(budgets, ids[key]);\n  if (!insight) throw new Error(`Meta Ads no devolvió insights para ${key} (${ids[key]}).`);\n  if (!campaign) throw new Error(`Meta Ads no devolvió presupuesto para ${key} (${ids[key]}).`);\n  const actual = actionValue(insight, actionType);\n  const investment = Number(insight.spend || 0);\n  const dailyBudget = Number(campaign.daily_budget || 0);\n  const budget = dailyBudget * Number(base.periodDaysElapsed || 1);\n  const kpi = withKpi ? Number(base[key]?.kpi || 0) : null;\n  return {\n    campaignId: ids[key], campaignName: insight.campaign_name, objective: insight.objective,\n    status: campaign.effective_status || campaign.status, actionType,\n    periodStartDate: insight.date_start, periodEndDate: insight.date_stop,\n    impressions: Number(insight.impressions || 0), reach: Number(insight.reach || 0),\n    actual, leads: actionType === 'lead' ? actual : undefined,\n    kpi, performance: kpi > 0 ? Number(((actual / kpi) * 100).toFixed(2)) : undefined,\n    dailyBudget, budget, investment, cpa: actionType === 'lead' && actual > 0 ? Math.round(investment / actual) : undefined\n  };\n};\nconst recognitionLive = metric('recognition', 'post_engagement');\nconst investorsLive = metric('investors', 'lead');\nconst housingLive = metric('housing', 'lead');\nconst studioLive = metric('studio', 'lead', false);\nconst metaLeads = investorsLive.leads + housingLive.leads + studioLive.leads;\nconst metaInvestment = investorsLive.investment + housingLive.investment + studioLive.investment;\nreturn [{ json: {\n  ...base,\n  recognition: { ...base.recognition, actual: recognitionLive.actual, performance: recognitionLive.performance, budget: recognitionLive.budget, investment: recognitionLive.investment },\n  investors: { ...base.investors, leads: investorsLive.leads, performance: investorsLive.performance, budget: investorsLive.budget, investment: investorsLive.investment, cpa: investorsLive.cpa },\n  housing: { ...base.housing, leads: housingLive.leads, performance: housingLive.performance, budget: housingLive.budget, investment: housingLive.investment, cpa: housingLive.cpa },\n  studio: { ...base.studio, leads: studioLive.leads, budget: studioLive.budget, investment: studioLive.investment, cpa: studioLive.cpa },\n  metaAds: { source: 'live', accountId: 'act_302924541795503', currency: 'COP', timezone: 'America/Bogota', periodMode: base.periodMode, periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate, totalLeads: metaLeads, leadCampaignInvestment: metaInvestment, campaigns: { recognition: recognitionLive, investors: investorsLive, housing: housingLive, studio: studioLive } },\n  dataSource: 'mixed',\n  dataSources: { googleAds: 'mock', metaAds: 'live', crm: 'mock' }\n} }];"
       }
     }
   ],
@@ -368,7 +459,7 @@
       "main": [
         [
           {
-            "node": "Consultar Google Ads Kinku",
+            "node": "Consultar Insights Meta Kinku",
             "type": "main",
             "index": 0
           }
@@ -501,6 +592,39 @@
         [
           {
             "node": "Preparar Solicitud Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Insights Meta Kinku": {
+      "main": [
+        [
+          {
+            "node": "Consultar Presupuestos Meta Kinku",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Presupuestos Meta Kinku": {
+      "main": [
+        [
+          {
+            "node": "Incorporar Meta Ads Real",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Incorporar Meta Ads Real": {
+      "main": [
+        [
+          {
+            "node": "Consultar Google Ads Kinku",
             "type": "main",
             "index": 0
           }

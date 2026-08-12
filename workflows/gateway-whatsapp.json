@@ -273,6 +273,46 @@
       ],
       "id": "77777777-7777-4777-8777-777777777777",
       "name": "Preparar Respuesta"
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $('Preparar Respuesta').first().json;\nif (!source.shouldGenerateReport) return [];\nlet inboundMessageId = null;\ntry {\n  const body = $('Webhook YCloud (Entrante)').first().json.body || {};\n  const message = body.whatsappInboundMessage || {};\n  inboundMessageId = message.id || message.wamid || null;\n} catch {}\ntry {\n  const body = $('Meta Webhook POST (Entrante)').first().json.body || {};\n  for (const entry of (body.entry || [])) {\n    for (const change of (entry.changes || [])) {\n      const message = change.value?.messages?.[0];\n      if (message?.id) inboundMessageId = message.id;\n    }\n  }\n} catch {}\nif (!inboundMessageId) return [];\nreturn [{ json: { inboundMessageId } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        128
+      ],
+      "id": "prepare-report-typing-indicator",
+      "name": "Preparar Indicador de Escritura"
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1209428932251589/messages",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"status\": \"read\", \"message_id\": $json.inboundMessageId, \"typing_indicator\": { \"type\": \"text\" } } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1712,
+        128
+      ],
+      "id": "show-report-typing-indicator",
+      "name": "Mostrar Escribiendo en WhatsApp",
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "nPllFGQLNUPDbgM5",
+          "name": "Meta WhatsApp API - Tic Tac"
+        }
+      }
     }
   ],
   "connections": {
@@ -376,6 +416,28 @@
         [
           {
             "node": "Enviar Respuesta Automatica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Respuesta Automatica": {
+      "main": [
+        [
+          {
+            "node": "Preparar Indicador de Escritura",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Indicador de Escritura": {
+      "main": [
+        [
+          {
+            "node": "Mostrar Escribiendo en WhatsApp",
             "type": "main",
             "index": 0
           }
