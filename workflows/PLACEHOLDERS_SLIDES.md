@@ -4,15 +4,15 @@
 
 - Plantilla productiva anterior y rollback:
   `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`.
-- Nueva plantilla privada de 29 diapositivas:
+- Nueva plantilla productiva de 29 diapositivas, validada primero en privado:
   `1cPlo9OeUWpfW7H1ACnbwpT59MSR_yruErFkVhc7jHOo`.
 - Informe privado validado el 13 de agosto de 2026:
   `1GAnmA_kJ0ebIlzOt3L3CcE_wx1OrFfqKsGgjScSxYuo`.
 
 La plantilla productiva anterior permanece intacta como rollback. El generador
 productivo fue actualizado el 13 de agosto de 2026 para usar la nueva plantilla.
-La prueba final con permiso de lector y WhatsApp queda pendiente de confirmar el
-destinatario exacto.
+La prueba final `2746` fue autorizada para un destinatario exacto, publicó el
+informe como lector y completó el envío por WhatsApp.
 
 ## Contrato del informe
 
@@ -130,3 +130,20 @@ La ejecución productiva `2746` completó los 22 nodos hasta WhatsApp:
 - 20 tablas nuevas, 1.141 solicitudes y cero dashboards automáticos;
 - 29 diapositivas auditadas por API y revisadas visualmente;
 - cero placeholders residuales y meta Skala 150.
+
+## Contrato para reemplazar tablas por dashboards
+
+Antigravity debe trabajar sobre una copia del informe productivo aceptado. Cada
+tabla visible es la fuente de verdad para el dashboard de esa diapositiva y no
+un dato decorativo. Antes de ocultar o reemplazar una tabla debe comprobar:
+
+- coincidencia exacta de categorías, series, valores, unidades y periodo;
+- título y leyenda coherentes con la etiqueta `DASHBOARD A GENERAR`;
+- análisis limitado a las métricas disponibles y a la etiqueta
+  `ANÁLISIS A GENERAR`;
+- ausencia de cifras inventadas en HubSpot, creativos o análisis de subasta;
+- conservación del informe fuente sin modificaciones para auditoría.
+
+La versión enriquecida debe mantener 29 diapositivas, la identidad gráfica y
+la legibilidad a tamaño de presentación. El procedimiento completo está en
+`../ANTIGRAVITY_HANDOFF.md`.

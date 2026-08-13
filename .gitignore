@@ -6,6 +6,7 @@
 !workflows/
 !workflows/*.json
 *_HANDOFF.md
+!ANTIGRAVITY_HANDOFF.md
 scratch/
 tunnel_url.txt
 cloudflare_url.txt

@@ -9,7 +9,9 @@
 > Google Sheets están activos con datos reales bajo `MONTH_TO_DATE` para Pekín,
 > Skala y Métriku. El generador de tablas y etiquetas para IA externa está
 > publicado y validado en la ejecución `2746`. HubSpot se inserta manualmente en la diapositiva 17. Consultar
-> `CODEX_HANDOFF.md` para el estado autoritativo y los cambios locales pendientes.
+> `CODEX_HANDOFF.md` para el estado autoritativo. La implementación productiva
+> está publicada en el commit `7225e7f`; la actualización documental de esta
+> fase queda local hasta que el usuario autorice otro commit.
 
 ---
 
@@ -60,7 +62,7 @@ graph TD
   > *"¡Hola Nicolás! 👋 ¿Para qué cliente deseas generar el informe ejecutivo hoy?  
   > 
   > 1️⃣ **Proyecto Pekín** (Activo)  
-  > 2️⃣ **Proyecto Skala** (Próximamente)  
+  > 2️⃣ **Proyecto Skala** (datos integrados en el informe de Pekín; informe independiente pendiente)
   > 3️⃣ **Cliente Prueba**  
   > 
   > Responde con el nombre o el número de la marca para iniciar la generación."*
@@ -151,10 +153,22 @@ criterios y periodo. Una IA externa trabajará después sobre el Slides editable
 El análisis debe contrastar el acumulado desde el día 1, la meta mensual completa, el
 CPA y la calidad del resultado antes de redactar el comentario definitivo.
 
+Antigravity ejecutará esta fase sobre una copia del informe aceptado. Su fuente
+de verdad son las tablas y etiquetas visibles del Slides; no debe consultar
+otras APIs, cambiar el periodo, completar HubSpot/creativos con supuestos ni
+alterar la presentación fuente. La entrega debe incluir el enlace de la copia,
+el mapeo tabla→dashboard y una validación visual de las 29 diapositivas.
+
+Documentos de ejecución:
+
+- `ANTIGRAVITY_HANDOFF.md`: contexto, alcance, mapa de diapositivas y criterios
+  de aceptación;
+- `PROMPT_ANTIGRAVITY_DASHBOARDS.md`: prompt listo para iniciar el trabajo.
+
 ---
 
 ## 7. Firma de Aprobación del Proyecto
 
 * **Elaborado por:** Santi
 * **Aprobado para Desarrollo en:** n8n / Codex
-* **Estado:** Listo para construcción de Nodos
+* **Estado:** Generador productivo aceptado; fase de dashboards y análisis con Antigravity pendiente

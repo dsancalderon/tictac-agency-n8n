@@ -44,6 +44,30 @@ El servidor n8n expone dos puntos de enlace (Webhooks) seguros bajo la URL de pr
 
 ---
 
+## 📊 Generador de informes ejecutivos
+
+El workflow productivo `xK8GPmsUphKV2B2Q` genera bajo demanda un Google Slides
+editable de 29 diapositivas. Consulta Google Sheets, Meta Ads y Google Ads con
+el contrato `MONTH_TO_DATE` en `America/Bogota`, conserva las metas mensuales
+completas y publica únicamente datos reales, tablas fuente y etiquetas de
+trabajo para una IA posterior.
+
+Estado aceptado al 13 de agosto de 2026:
+
+- versión productiva: `9cfffeb3-0e24-443c-8e51-344bb1efe2a7`, 22 nodos;
+- ejecución final: `2746`, exitosa;
+- informe aceptado: [Google Slides](https://docs.google.com/presentation/d/1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk/edit);
+- 29 diapositivas, 20 tablas nuevas, cero dashboards automáticos y cero
+  placeholders residuales;
+- HubSpot y las selecciones de creativos permanecen manuales.
+
+La siguiente fase usa Antigravity para crear dashboards y análisis **sobre una
+copia** del informe fuente. No modifica el workflow, la plantilla productiva ni
+las cifras de origen. Consultar [ANTIGRAVITY_HANDOFF.md](ANTIGRAVITY_HANDOFF.md)
+y [PROMPT_ANTIGRAVITY_DASHBOARDS.md](PROMPT_ANTIGRAVITY_DASHBOARDS.md).
+
+---
+
 ## 🛠️ Variables de Entorno (.env & Render)
 
 Las siguientes variables de entorno deben estar configuradas en la consola de **Render** y en el archivo local `.env`:

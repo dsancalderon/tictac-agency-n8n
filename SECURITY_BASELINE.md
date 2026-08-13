@@ -1,6 +1,6 @@
 # Línea base de credenciales
 
-Última revisión: 2026-08-12
+Última revisión: 2026-08-13
 
 ## Estado confirmado
 
@@ -12,6 +12,9 @@
 - Los tokens de Meta y n8n estuvieron presentes en un handoff histórico. Aunque ese archivo no está versionado, cualquier token histórico expuesto debe permanecer revocado.
 - Meta Ads usa la credencial cifrada `Meta Ads - Kinku`; el token no aparece en el workflow exportado ni en la documentación versionada.
 - Los webhooks actuales filtran tipos de evento, pero todavía no validan criptográficamente la firma del emisor.
+- La aceptación `2746` compartió únicamente el informe final autorizado como
+  `anyoneWithLink`, rol `reader` y sin descubrimiento. La plantilla productiva y
+  la copia privada de validación no se hicieron públicas.
 
 ## Fuente autorizada de cada secreto
 
@@ -46,6 +49,21 @@
 - Los webhooks rechazan firmas inválidas y conservan el filtro anti-bucle.
 - Una prueba controlada produce una sola respuesta y no genera ejecuciones recursivas.
 - Las claves anteriores quedan revocadas después de verificar las nuevas.
+
+## Tratamiento del informe y de la IA externa
+
+- El Slides generado contiene información operativa de campañas. Compartir
+  cada informe solo con el alcance expresamente autorizado; no ampliar permisos
+  de la plantilla ni de los respaldos.
+- Antigravity debe trabajar sobre una copia del informe fuente. El artefacto de
+  la ejecución `2746` permanece como evidencia inmutable de los datos recibidos.
+- No entregar a la IA credenciales de n8n, Meta, Google Ads, YCloud, HubSpot ni
+  archivos `.env`. Para esta fase solo necesita el Slides editable y el handoff.
+- No copiar tokens, IDs de credenciales cifradas ni payloads privados dentro de
+  notas, análisis o comentarios de la presentación.
+- Antes de compartir la versión enriquecida, revisar visualmente las 29
+  diapositivas, comprobar que no se inventaron cifras y otorgar como máximo
+  permiso de lector salvo autorización distinta.
 
 ## Nota sobre el historial Git
 

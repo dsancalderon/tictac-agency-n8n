@@ -113,6 +113,15 @@ La aceptación productiva `2746` generó
 WhatsApp `6a7d73a4e3c0d81f9b263c81` aceptado. Las 29 diapositivas fueron
 revisadas visualmente y no contienen dashboards automáticos.
 
+## Uso posterior por Antigravity
+
+Los dashboards de Meta deben derivarse únicamente de las tablas visibles de
+resumen, serie diaria, edad/género y plataforma. Se deben conservar las
+campañas, unidades, periodo y metas tal como aparecen en el informe. No se
+permite inferir rendimiento de creativos, ubicación, atribución causal ni datos
+de HubSpot: esas dimensiones no forman parte del contrato `reportDataV1` y sus
+diapositivas permanecen manuales.
+
 ## Aceptación de producción del 12 de agosto de 2026
 
 - Ejecución aislada de conexión: `2700`, exitosa.

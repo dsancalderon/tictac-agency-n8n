@@ -202,6 +202,14 @@ tablas PMAX del informe `1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk`
 coinciden con la consulta real de Google Ads y no incluyen análisis de subasta
 ni datos no consultados.
 
+## Uso posterior por Antigravity
+
+Las diapositivas 15 y 16 deben graficarse únicamente con las tablas PMAX
+visibles del informe aceptado. Antigravity no debe añadir cuota de impresiones,
+posición, competidores, términos de búsqueda ni análisis de subasta porque esas
+dimensiones no fueron consultadas. Cualquier interpretación debe conservar el
+periodo mensual, la moneda COP y distinguir observación de inferencia.
+
 ## Limpieza posterior a la aceptación
 
 Se eliminaron los siete workflows temporales usados para respaldo, sondeo y

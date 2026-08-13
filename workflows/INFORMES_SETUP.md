@@ -33,8 +33,8 @@ El generador combina fuentes reales con metas mensuales de Google Sheets. Cada s
 | Consultar Google Ads Kinku → Incorporar Google Ads Real | Producción: Google Ads real para la PMAX de Kinku |
 | Consultar Tendencia/Demografia/Plataformas Meta → Preparar Datos del Informe | Contrato local validado: construye `reportDataV1` con resúmenes y series fuente de Pekín, Skala y Métriku |
 | Preparar Datos del Informe → Preparar Batch Update | Contrato local validado: reemplaza escalares, crea tablas visibles y escribe etiquetas para una IA posterior; no crea gráficos |
-| Copiar y completar Google Slides | Producción usa la nueva plantilla mediante la credencial `Google Drive account` |
-| Preparar Notificación Final | Configurado para enviar por YCloud/WhatsApp |
+| Copiar y completar Google Slides | Producción usa la nueva plantilla mediante la credencial `Google Drive account`; aceptación `2746` completada |
+| Preparar Notificación Final | Producción validada por YCloud/WhatsApp; mensaje final `6a7d73a4e3c0d81f9b263c81` aceptado |
 
 ## Variables pendientes
 
@@ -161,6 +161,21 @@ HubSpot y creativos permanecen como zonas manuales. La IA que genere después
 los dashboards y análisis es externa al workflow y recibe el Google Slides
 editable.
 
+### Contrato de consumo para Antigravity
+
+1. Usar como entrada una copia del informe aceptado, nunca la plantilla ni el
+   artefacto fuente de producción.
+2. Derivar cada gráfico exclusivamente de la tabla visible de su diapositiva.
+3. Mantener `MONTH_TO_DATE`, `America/Bogota`, `MONTHLY_FULL_TARGET` y las
+   fuentes declaradas.
+4. No inventar HubSpot, creativos, análisis de subasta, históricos ni métricas
+   no incluidas en las tablas.
+5. Entregar una copia editable, un registro tabla→dashboard y evidencia de la
+   revisión visual de las 29 diapositivas.
+
+Las instrucciones completas están en `../ANTIGRAVITY_HANDOFF.md` y el prompt
+de ejecución en `../PROMPT_ANTIGRAVITY_DASHBOARDS.md`.
+
 ## Prueba privada de Google Slides
 
 - Plantilla productiva/rollback: `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`.
@@ -169,9 +184,9 @@ editable.
 - El envío final usa la credencial cifrada de n8n `YCloud API - Tic Tac`; la API key no queda escrita dentro del workflow.
 - Cada solicitud crea una copia, reemplaza escalares y añade 20 tablas fuente.
 - El informe conserva 29 diapositivas y cero gráficos automáticos.
-- En producción, y solo después de aprobar el artefacto privado, la rama final
-  podrá otorgar permiso de lector y enviar el enlace por WhatsApp. La prueba
-  `2744` se detuvo antes de ambas operaciones.
+- La validación privada `2744` se detuvo antes de permisos y WhatsApp. Después
+  de su aprobación, la ejecución productiva `2746` otorgó permiso de lector y
+  envió el enlace por WhatsApp al destinatario expresamente autorizado.
 - Mientras no exista una carpeta final compartida, las copias quedan en la raíz de Mi unidad de la cuenta conectada.
 - Después del mensaje de confirmación, Meta muestra el indicador de escritura durante el procesamiento; se apaga con la respuesta final o a los 25 segundos.
 - La notificación final declara que Google Ads, Meta Ads y las metas de Sheets
@@ -195,6 +210,10 @@ mensaje `6a7d73a4e3c0d81f9b263c81` fue aceptado. Informe:
 `https://docs.google.com/presentation/d/1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk/edit`.
 La auditoría confirmó 29 diapositivas, 20 tablas nuevas, cero gráficos, cero
 placeholders y meta total Skala 150.
+
+La próxima fase ya no modifica n8n: Antigravity generará dashboards y análisis
+sobre una copia del informe `2746`. La versión fuente debe conservarse para
+conciliar cifras y permitir rollback visual.
 
 El contrato `MONTH_TO_DATE` se validó posteriormente en la ejecución aislada
 `2684`: periodo del 1 al 12 de agosto de 2026, 12 días transcurridos, rango
@@ -232,3 +251,13 @@ Desde el número autorizado:
 Desde otro número:
 
 - Ningún alias debe iniciar un informe.
+
+## Próxima aceptación: salida de Antigravity
+
+- abrir y revisar las 29 diapositivas, no solo confirmar que la tarea terminó;
+- conciliar cada valor graficado con la tabla fuente correspondiente;
+- comprobar títulos, leyendas, unidades COP, porcentajes y periodo;
+- confirmar que las zonas manuales 8, 12, 13, 17, 24 y 28 no contienen cifras
+  inventadas;
+- conservar una copia intacta del informe fuente y no modificar producción;
+- compartir el resultado solo después de aprobación humana.

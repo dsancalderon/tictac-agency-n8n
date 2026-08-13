@@ -140,3 +140,21 @@ Decisión vigente del 12 de agosto de 2026:
 - [ ] Definir responsable de rotar tokens.
 - [x] Guardar secretos únicamente en credenciales de n8n o variables de Render.
 - [x] No subir secretos al repositorio.
+
+## 8. Aceptación y fase Antigravity
+
+- [x] Ejecución productiva `2746` completada con las 29 diapositivas.
+- [x] Informe compartido como cualquiera con el enlace, rol lector y sin
+  descubrimiento.
+- [x] Enlace enviado por WhatsApp al número de prueba autorizado; mensaje
+  `6a7d73a4e3c0d81f9b263c81`, estado `accepted`.
+- [x] Skala conciliado en meta mensual total 150 = 70 + 50 + 30.
+- [x] Auditoría visual de las 29 miniaturas sin recortes ni solapamientos.
+- [ ] Crear una copia del informe aceptado para que Antigravity genere los
+  dashboards y análisis; no editar el informe fuente.
+- [ ] Validar que cada dashboard coincida exactamente con su tabla fuente y que
+  cada análisis distinga hechos, inferencias y datos faltantes.
+- [ ] Completar manualmente HubSpot y creativos, o conservar sus zonas vacías
+  claramente identificadas.
+- [ ] Aprobar visualmente el artefacto de Antigravity antes de compartirlo con
+  un cliente o reemplazar cualquier elemento del proceso vigente.
