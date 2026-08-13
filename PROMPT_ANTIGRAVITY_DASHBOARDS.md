@@ -14,13 +14,25 @@ Ese archivo define el alcance, las fuentes, el mapa de diapositivas, las reglas
 de análisis, el diseño, las fases y los criterios de aceptación. Si no puedes
 acceder a ese archivo, detente y solicítalo; no improvises el contrato.
 
-Informe fuente:
-https://docs.google.com/presentation/d/1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk/edit
+INFORME FUENTE DE ESTA EJECUCIÓN:
+
+`[EL USUARIO DEBE PEGAR AQUÍ MANUALMENTE EL ENLACE QUE RECIBIÓ POR WHATSAPP]`
+
+El enlace no está almacenado de forma permanente en este prompt. Debes usar
+únicamente el Google Slides que el usuario adjunte o pegue manualmente en la
+conversación actual. No reutilices enlaces de ejecuciones anteriores, ejemplos,
+documentación ni memoria de otras conversaciones.
+
+Si el usuario todavía no proporcionó el enlace, responde solamente solicitando
+el `INFORME FUENTE DE ESTA EJECUCIÓN` y no ejecutes n8n, no uses WhatsApp y no
+modifiques ninguna presentación. Antigravity empieza su trabajo únicamente
+después de recibir ese enlace.
 
 Objetivo:
 
-1. Crea una copia editable del informe. No modifiques el original, la plantilla
-   productiva, n8n, Git, permisos ni WhatsApp.
+1. Crea una copia editable del informe que el usuario adjuntó manualmente en
+   esta conversación. No modifiques el original, la plantilla productiva, n8n,
+   Git, permisos ni WhatsApp.
 2. Usa únicamente las tablas y etiquetas visibles del Slides. No consultes APIs
    ni busques datos externos.
 3. Sustituye en la copia las tablas/etiquetas de las páginas analíticas por
@@ -38,6 +50,18 @@ Objetivo:
 8. Preserva la identidad gráfica, asegura legibilidad y revisa visualmente las
    29 diapositivas; no des por terminado el trabajo solo porque la edición haya
    finalizado sin error.
+9. Aplica el color de marca según la campaña y su portada. Sustituye los acentos
+   verdes de títulos, bordes, barras y destacados por el color correspondiente
+   en todas las diapositivas del bloque de esa campaña:
+   - Pekín: coral `#EB603F`;
+   - Métriku: amarillo `#FA9B03`;
+   - Skala: morado `#5B216B`.
+   El bloque comienza después de la portada de la campaña y termina antes de la
+   portada siguiente. Conserva los fondos oscuros, blancos, grises, textos y
+   demás colores neutros. Cuando una gráfica necesite distinguir una segunda
+   serie que originalmente usaba otro tono de verde, utiliza una variante más
+   oscura del color de la campaña, manteniendo contraste y legibilidad. No
+   dejes acentos verdes dentro de los bloques de Pekín, Métriku o Skala.
 
 Trabaja por fases y valida antes de continuar:
 
@@ -71,8 +95,10 @@ Tu respuesta final debe incluir:
 4. matriz resumida tabla→dashboard y resultado de conciliación;
 5. confirmación de revisión visual de las 29 diapositivas;
 6. confirmación explícita de meta Skala 150 y ausencia de 80;
-7. datos faltantes, supuestos evitados, riesgos y decisiones de diseño;
-8. siguiente acción recomendada y cualquier aprobación necesaria.
+7. confirmación del color aplicado a cada campaña y de que no quedan acentos
+   verdes en los bloques de Pekín, Métriku o Skala;
+8. datos faltantes, supuestos evitados, riesgos y decisiones de diseño;
+9. siguiente acción recomendada y cualquier aprobación necesaria.
 
 No compartas la presentación resultante con terceros ni reemplaces el original
 sin aprobación expresa de Santi/Nicolás.
