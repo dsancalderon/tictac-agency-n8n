@@ -17,16 +17,35 @@ No se requieren permisos de escritura durante la primera fase.
 
 ### Definiciones
 
-- [ ] ID del pipeline utilizado.
-- [ ] IDs y significado de las etapas.
-- [ ] Propiedad que identifica el proyecto o cliente.
-- [ ] Propiedad utilizada para MQL.
-- [ ] Propiedad utilizada para No Nicho.
-- [ ] Propiedad utilizada para Pendiente de clasificar.
-- [ ] Propiedad utilizada para Venta.
-- [ ] Propiedad o criterio de lead caliente.
-- [ ] Regla para contar leads duplicados.
-- [ ] Fecha utilizada para incluir un registro en el informe.
+- [x] Pipeline Lead identificado: `Lead pipeline`.
+- [x] Etapas visibles: `New`, `Attempting`, `Connected`, `Qualified` y
+  `Disqualified`; todavía no equivalen por sí solas a las métricas del informe.
+- [x] Propiedad que identifica el proyecto: contacto `proyecto`, valor interno
+  `Pekín`.
+- [x] Propiedad utilizada para MQL: contacto `lifecyclestage`, valor
+  `marketingqualifiedlead`.
+- [x] `No Nicho` no aplica: Nicolás confirmó que era una categoría inventada.
+- [x] Pendientes, ventas y lead caliente no se automatizan en esta fase; se
+  mostrarán mediante los dashboards manuales aprobados.
+- [ ] Regla para contar contactos duplicados cuando HubSpot se automatice.
+- [ ] Confirmar la fecha aplicable a cada dashboard cuando HubSpot se automatice.
+
+Hallazgos que no deben convertirse en reglas sin confirmación:
+
+- Lead `hs_lead_disqualification_reason = NOT_A_GOOD_FIT` es solo una posible
+  aproximación a `No Nicho`.
+- Contacto `hs_lead_status` casi no tiene registros y no representa el embudo.
+- No asumir `Pendientes = New + Attempting`.
+- No asumir `Ventas = lifecyclestage:customer`; confirmar si se usan Deals
+  cerrados ganados.
+
+Decisión vigente del 12 de agosto de 2026:
+
+- [x] Nicolás confirmó que `No Nicho` era una categoría inventada.
+- [x] El informe usará manualmente los dashboards de etapa del ciclo de vida y
+  estado del contacto mientras no exista acceso para crear la Private App.
+- [x] Filtro confirmado: `proyecto = Pekín`, propietario Sofia Prias
+  (`hubspot_owner_id = 90633401`) y acumulado desde el día 1 hasta la generación.
 
 ## 2. Meta Ads
 
@@ -39,6 +58,7 @@ No se requieren permisos de escritura durante la primera fase.
 - [x] Permiso `ads_read`.
 - [x] Permiso para consultar insights y campañas.
 - [x] Campañas de Proyecto Pekín confirmadas por ID.
+- [x] Campañas de Skala identificadas y aprobadas para la futura integración.
 
 ### Definiciones
 
@@ -48,6 +68,11 @@ No se requieren permisos de escritura durante la primera fase.
 - [x] Reconocimiento / interacción: `120249557003280774`.
 - [x] Lead: acción `lead`; Reconocimiento: `post_engagement`.
 - [x] Moneda `COP` y zona horaria `America/Bogota`.
+- [x] Skala Inversión: `120248650813200774`.
+- [x] Skala Vivienda: `120248651700020774`.
+- [x] Skala Feria Gran Salón: `120249270128040774`.
+- [x] Primero se conectará Sheets; luego las metas y presupuestos de Skala se
+  tomarán de la hoja.
 - [ ] Desgloses requeridos: fecha, edad, género, plataforma y ubicación.
 
 ## 3. Google Ads

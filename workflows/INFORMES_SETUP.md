@@ -22,13 +22,13 @@ Los IDs internos de workflows los asigna cada instancia de n8n al importarlos, p
 
 ## Estado de las integraciones
 
-El generador combina fuentes reales y simuladas. Cada salida conserva el campo
+El generador combina fuentes reales con configuración temporal. Cada salida conserva el campo
 `dataSources` para que el informe identifique el origen de los datos:
 
 | Flujo o nodo | Estado |
 | --- | --- |
 | Cargar Configuración Temporal | Google Sheets / tabla maestra |
-| Recolectar Datos Simulados | Conserva configuración temporal y CRM simulado |
+| Recolectar Datos Simulados | Conserva configuración temporal; las métricas CRM simuladas ya no se publican en Slides ni WhatsApp |
 | Consultar Insights Meta Kinku → Consultar Presupuestos Meta Kinku → Incorporar Meta Ads Real | Producción: Meta Ads real para Reconocimiento, Inversionistas, Vivienda y Apartaestudios |
 | Consultar Google Ads Kinku → Incorporar Google Ads Real | Producción: Google Ads real para la PMAX de Kinku |
 | Preparar Solicitud Gemini → Generar Analisis con Gemini → Validar Analisis Gemini | Configurado con Gemini 3.5 Flash, salida JSON validada y hasta 3 intentos ante fallos temporales |
@@ -37,10 +37,67 @@ El generador combina fuentes reales y simuladas. Cada salida conserva el campo
 
 ## Variables pendientes
 
-- ID de empresa o filtros de HubSpot.
+- HubSpot: automatización diferida hasta disponer de una Private App de solo
+  lectura; mientras tanto los dos dashboards se insertan manualmente.
 - ID de carpeta de Google Drive.
 - Metas mensuales o metas del periodo acumulado.
 - Credencial de HubSpot en n8n.
+
+## HubSpot: inserción manual vigente
+
+La inspección manual del 12 de agosto de 2026 confirmó:
+
+| Concepto | Objeto | Propiedad/valor interno |
+| --- | --- | --- |
+| Proyecto Pekín | Contacto | `proyecto = Pekín` |
+| MQL | Contacto | `lifecyclestage = marketingqualifiedlead` |
+| Fecha inicial propuesta | Contacto | `createdate` |
+| Estado estándar | Contacto | `hs_lead_status` (sin uso suficiente) |
+| Razón de descalificación | Lead | `hs_lead_disqualification_reason` |
+
+El pipeline del objeto Lead contiene `New`, `Attempting`, `Connected`,
+`Qualified` y `Disqualified`, pero sus etapas calificadas no contienen datos
+suficientes para reconstruir el embudo. La opción `NOT_A_GOOD_FIT` existe como
+razón de descalificación, pero no se debe mapear a `No Nicho` sin aprobación de
+Nicolás.
+
+Nicolás confirmó que `No Nicho` era una categoría inventada y que el informe
+debe basarse en los dashboards reales de etapa del ciclo de vida y estado del
+contacto. Como el usuario actual no puede crear una Private App, la diapositiva
+17 quedó destinada a inserción manual de ambos dashboards. El generador no
+reemplaza ni publica cifras CRM simuladas y la notificación final identifica
+HubSpot como inserción manual.
+
+Cuando exista acceso API, la futura automatización debe aplicar
+`proyecto = Pekín`, `hubspot_owner_id = 90633401`, fecha desde el día 1 hasta la
+generación y deduplicación por ID de contacto. La propiedad operativa es
+`estado_del_contacto`; los valores observados incluyen `Agendado`,
+`Marcar de nuevo`, `No útil`, `Seguimiento`, `Lead Caliente` y `Desistimiento`.
+
+## Preparación para Google Sheets
+
+La siguiente conversación debe comenzar por Sheets sin esperar HubSpot. La
+integración debe sustituir `Cargar Configuración Temporal`, no las fuentes
+reales de Ads ni la sección manual de HubSpot. Antes de editar se debe obtener:
+
+1. URL o ID de la hoja maestra y nombre exacto de cada pestaña;
+2. una fila real de Proyecto Pekín y la clave estable para localizarla;
+3. nombres de columnas para cliente, plantilla, carpeta, metas y presupuestos;
+4. definición de si cada meta es mensual completa o acumulada al corte;
+5. moneda/unidad de cada valor y tratamiento de celdas vacías;
+6. acceso de lectura para la cuenta OAuth usada por `Google Drive account`, o
+   una credencial separada de Google Sheets;
+7. política de error: detener el informe si falta la fila o un campo obligatorio.
+
+Una vez validada la lectura de Sheets, integrar la sección Skala con sus tres
+campañas confirmadas —Inversión, Vivienda y Feria Gran Salón— y tomar de la hoja
+sus metas y presupuestos. La prueba inicial de Sheets debe ser aislada: no crear
+Slides ni enviar WhatsApp.
+
+La salida debe conservar `reportingContract`, `periodStartDate`,
+`periodEndDate`, `periodDaysElapsed` y `periodLabel`. No calcular metas
+acumuladas multiplicando datos ambiguos: la regla debe quedar explícita por
+columna.
 
 ## Contrato temporal compartido
 
@@ -91,21 +148,21 @@ rollback están en `GOOGLE_ADS_INTEGRATION.md`.
    - `Validar Analisis Gemini`
 7. Confirmar que la salida contiene `aiSource: gemini-3.5-flash` y los tres textos de `strategicCopy`.
 
-El workflow usa una credencial cifrada para el encabezado `x-goog-api-key`, respuesta JSON estructurada y validación obligatoria antes de crear la presentación. Google Ads y Meta Ads usan datos reales; CRM continúa simulado.
+El workflow usa una credencial cifrada para el encabezado `x-goog-api-key`, respuesta JSON estructurada y validación obligatoria antes de crear la presentación. Google Ads y Meta Ads usan datos reales; HubSpot se inserta manualmente y sus valores simulados no se publican.
 
 ## Prueba real de Google Slides
 
 - Plantilla nativa configurada: `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`.
 - Credencial de n8n configurada por ID interno; el Client Secret no se guarda en este repositorio.
 - El envío final usa la credencial cifrada de n8n `YCloud API - Tic Tac`; la API key no queda escrita dentro del workflow.
-- Cada solicitud crea una copia nueva en Mi unidad, ejecuta 40 solicitudes de
+- Cada solicitud crea una copia nueva en Mi unidad, ejecuta 34 solicitudes de
   reemplazo y envía el enlace al mismo número de WhatsApp que pidió el informe.
 - Las diapositivas 15 y 16 usan texto dinámico de Google Ads; la plantilla no
   conserva capturas históricas con métricas que puedan contradecir el periodo.
 - Cada copia recibe el permiso `cualquier persona con el enlace: lector`, sin permitir edición ni aparecer en búsquedas públicas.
 - Mientras no exista una carpeta final compartida, las copias quedan en la raíz de Mi unidad de la cuenta conectada.
 - Después del mensaje de confirmación, Meta muestra el indicador de escritura durante el procesamiento; se apaga con la respuesta final o a los 25 segundos.
-- La notificación final declara explícitamente: `Google Ads y Meta Ads: datos reales. CRM: datos simulados.`
+- La notificación final declara explícitamente: `Google Ads y Meta Ads: datos reales. HubSpot: inserción manual.`
 
 La aceptación definitiva del 12 de agosto de 2026 corresponde a la ejecución
 `2681`: 16 nodos exitosos, 47 ocurrencias reemplazadas, ningún placeholder

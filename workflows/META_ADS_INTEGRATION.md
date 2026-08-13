@@ -3,8 +3,8 @@
 ## Alcance
 
 Esta integración incorpora métricas reales acumuladas del mes desde Meta Ads al
-generador `xK8GPmsUphKV2B2Q`. Google Ads también es real; CRM y las metas
-continúan temporales hasta conectar sus fuentes autoritativas.
+generador `xK8GPmsUphKV2B2Q`. Google Ads también es real; HubSpot se completa
+manualmente y las metas continúan temporales hasta conectar Google Sheets.
 
 ## Recursos de producción
 
@@ -14,7 +14,7 @@ continúan temporales hasta conectar sus fuentes autoritativas.
 | Cuenta publicitaria | `act_302924541795503` |
 | Credencial cifrada de n8n | `Meta Ads - Kinku` |
 | Workflow generador | `xK8GPmsUphKV2B2Q` |
-| Versión publicada | `4fc4febe-e8e7-410f-a61f-180f67e9fd19` |
+| Versión publicada | `ab1880ec-ba4b-4ca6-bdd9-3a97a6ad0f0d` |
 
 El token de usuario del sistema no se almacena en Git ni en el JSON del
 workflow. La credencial usa `Authorization: Bearer ...` dentro del almacén
@@ -58,7 +58,8 @@ campaña, no de conjunto de anuncios.
 - CPA: inversión dividida por leads.
 - Performance: resultado dividido por KPI temporal por 100.
 - Presupuesto del periodo: `daily_budget * periodDaysElapsed`.
-- Procedencia: `googleAds=live`, `metaAds=live`, `crm=mock`.
+- Procedencia publicada: Google Ads y Meta Ads reales; HubSpot manual y sin
+  cifras CRM simuladas en Slides o WhatsApp.
 
 El nodo detiene el informe si falta cualquiera de las cuatro campañas en los
 insights o en la consulta de presupuestos. No sustituye silenciosamente una
@@ -71,6 +72,26 @@ del mes. Si una campaña cambió su presupuesto, el presupuesto acumulado
 calculado puede ser inferior o superior al gasto real. Esto se observó en
 Reconocimiento: el presupuesto vigente fue COP 3.400 diarios, mientras el gasto
 acumulado reflejaba una configuración histórica mayor.
+
+## Proyecto Skala: pendiente de integración dinámica
+
+La plantilla contiene una sección de Skala en las diapositivas 19 a 28, pero
+actualmente sus cifras y textos son estáticos; el generador productivo no los
+reemplaza. La ejecución `2720` confirmó tres campañas activas con datos reales
+acumulados del 1 al 12 de agosto de 2026:
+
+| Campaña | ID | Leads | Inversión |
+| --- | --- | ---: | ---: |
+| Inversión Skala | `120248650813200774` | 42 | COP 226.432 |
+| Vivienda Skala | `120248651700020774` | 30 | COP 164.115 |
+| Feria Gran Salón Skala | `120249270128040774` | 174 | COP 329.456 |
+
+Estos números son evidencia de la ejecución, no constantes. El usuario confirmó
+que el informe debe incluir Inversión, Vivienda y Feria Gran Salón. Primero se
+conectará Google Sheets y después las metas/presupuestos de Skala se leerán desde
+la hoja. Los valores estáticos de 90/COP 900.000 y 60/COP 600.000 son únicamente
+temporales. No declarar la sección Skala como real hasta reemplazar también sus
+textos e imágenes históricas y validar visualmente el informe final.
 
 ## Aceptación de producción del 12 de agosto de 2026
 

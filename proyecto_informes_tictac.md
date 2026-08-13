@@ -2,8 +2,14 @@
 
 **Cliente / Proyecto:** Tic Tac Agency (Nicolás)  
 **Desarrollador / Líder Técnico:** Santi  
-**Tecnología Base:** n8n (Desplegado en Render), WhatsApp Business API, HubSpot API, Google Cloud (Slides/Drive/Sheets), Gemini 1.5/2.5 Flash API  
+**Tecnología Base:** n8n (desplegado en Render), WhatsApp/YCloud, Google Ads API, Meta Ads API, Google Cloud (Slides/Drive/Sheets), HubSpot y Gemini 3.5 Flash
 **Versión:** 1.0 (Fase 1: Prueba de Concepto Monocliente escalable a Multi-cliente)
+
+> Estado operativo al 12 de agosto de 2026: Google Ads y Meta Ads están activos
+> con datos reales bajo `MONTH_TO_DATE`. HubSpot se inserta manualmente en la
+> diapositiva 17. La siguiente implementación es Google Sheets; después se hará
+> dinámica la sección Skala con Inversión, Vivienda y Feria Gran Salón. Consultar
+> `CODEX_HANDOFF.md` para el estado autoritativo y los cambios locales pendientes.
 
 ---
 
@@ -11,7 +17,10 @@
 
 El objetivo es construir un **Flujo de Automatización Bajo Demanda en n8n** que permita a Nicolás (Director de Tic Tac Agency) solicitar y generar informes ejecutivos cada siete días para los clientes de su agencia directamente desde **WhatsApp**. Cada informe representa el acumulado del mes: comienza el día 1 y termina en el instante de generación.
 
-El sistema consulta los datos cuantitativos de **HubSpot** y la hoja de metas de la agencia, utiliza un Modelo de Lenguaje (**Gemini/OpenAI API**) para redactar la síntesis cualitativa con el tono estratégico de Tic Tac Agency, y clona y rellena automáticamente una plantilla estándar en **Google Slides** de 29 diapositivas, entregando el archivo final en Google Drive con una notificación por WhatsApp.
+El sistema consulta datos reales de **Google Ads** y **Meta Ads**, utiliza
+**Gemini** para redactar la síntesis cualitativa y clona y rellena una plantilla
+de **Google Slides**. Google Sheets será la fuente autoritativa de configuración,
+metas y presupuestos. HubSpot permanece manual hasta disponer de una Private App.
 
 ---
 
@@ -38,7 +47,7 @@ graph TD
 #### Caso A: Solicitud Directa de Informe (Marca identificada)
 * **Nicolás:** *"Hola, genera el informe de Proyecto Pekín porfa."*
 * **Respuesta Automática n8n:**  
-  > *"¡Recibido, Nicolás! 🚀 Estoy procesando la información de HubSpot y campañas para **Proyecto Pekín**. En un par de minutos te enviaré el enlace a las diapositivas listas en tu Drive."*
+  > *"¡Recibido, Nicolás! 🚀 Estoy procesando las campañas para **Proyecto Pekín**. En un par de minutos te enviaré el enlace a las diapositivas listas en tu Drive."*
 * **Acción n8n:** Ejecuta la consulta de datos, el análisis por IA, la inyección en Google Slides y devuelve:  
   > *"✅ **Informe de Proyecto Pekín completado.**  
   > 📁 **Enlace al informe en Drive:** [Ver Presentación en Google Drive](https://drive.google.com/...)  
@@ -77,15 +86,18 @@ graph TD
 * **Función:** Responde inmediatamente a Nicolás confirmando que la generación ha comenzado.
 
 ### Nodo 6: Read Client Configuration (Google Sheets Node)
-* **Función:** Lee la fila del cliente en la Tabla Maestra de Google Sheets. Obtiene:
+* **Estado:** siguiente implementación pendiente.
+* **Función prevista:** Lee la fila del cliente en la Tabla Maestra de Google Sheets. Obtiene:
   * ID de Empresa en HubSpot.
   * ID de la Plantilla de Google Slides de Tic Tac Agency.
   * ID de la Carpeta de Google Drive del Cliente.
   * Metas mensuales o metas del periodo acumulado de leads e inversión.
 
 ### Nodo 7: Data Collector (HubSpot API Node / HTTP Request)
-* **Función:** Consulta la API de HubSpot entre `periodStart` y `periodEnd`, es decir, desde el primer día del mes hasta el instante de generación:
-  * Conteo de contactos/leads por etapa del pipeline (Registrados, MQLs, No Nicho, Pendientes de Clasificación, Ventas).
+* **Estado:** diferido hasta disponer de una Private App de solo lectura.
+* **Función futura:** Consultar la API de HubSpot entre `periodStart` y
+  `periodEnd`. Mientras tanto, la diapositiva 17 queda libre para pegar
+  manualmente los dashboards aprobados.
 
 ### Nodo 8: AI Strategic Copywriting (Gemini / OpenAI API Node)
 * **Función:** Recibe los datos consolidados y genera mediante un System Prompt especializado los textos ejecutivos para los bullet points de las diapositivas (estilo Tic Tac Agency).
@@ -111,7 +123,7 @@ Basado en la presentación real de 29 diapositivas de Tic Tac Agency (Proyecto P
 | **Tabla de Rendimiento (Slide 3)** | Google Sheets Metas + Ads API | `{{KPI_META}}`, `{{KPI_REAL}}`, `{{PERFORMANCE_PCT}}`, `{{INVERSION_REAL}}` |
 | **Performance por Línea (Slide 4)** | Datos calculados por n8n | `{{VIVIENDA_INVERSION}}`, `{{VIVIENDA_LEADS}}`, `{{VIVIENDA_CPA}}` |
 | **Análisis Cualitativo (Slides 5, 6, 7)** | **Gemini / ChatGPT API** | `{{ANALISIS_TENDENCIA_VIVIENDA}}`, `{{RECOMENDACION_AGENCIA_VIVIENDA}}` |
-| **Embudo CRM (Slide 17)** | **HubSpot API** | `{{LEADS_REGISTRADOS}}`, `{{MQLS}}`, `{{NO_NICHO}}`, `{{PENDIENTES}}`, `{{SINTESIS_EMBUDO}}` |
+| **Dashboards HubSpot (Slide 17)** | Inserción manual vigente | Sin placeholders automáticos; área libre para dos dashboards |
 
 ---
 

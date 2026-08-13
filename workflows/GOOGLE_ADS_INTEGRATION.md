@@ -4,7 +4,8 @@
 
 Esta integración incorpora métricas reales de la campaña Performance Max de
 Kinku al generador de informes. Meta Ads también está conectado en producción;
-HubSpot y la tabla maestra de metas continúan pendientes.
+HubSpot se inserta manualmente y Google Sheets es la siguiente integración
+pendiente para configuración, metas y presupuestos.
 
 ## Recursos de producción
 
@@ -179,7 +180,9 @@ El workflow temporal de esta validación fue desactivado y eliminado.
 - WhatsApp: mensaje `6a7bfd776ea9423da69d432e`, estado `accepted`, costo
   USD 0, categoría `service`.
 - Desde la aceptación de Meta Ads `2711`, la notificación identifica Google Ads
-  y Meta Ads como fuentes reales y CRM como fuente simulada.
+  y Meta Ads como fuentes reales. Desde la versión
+  `ab1880ec-ba4b-4ca6-bdd9-3a97a6ad0f0d`, HubSpot se identifica como inserción
+  manual y ya no se publican cifras CRM simuladas.
 - La versión de producción `9cf08ff0-36fa-481c-92d1-9f0892dff35b` aplica el
   contrato `MONTH_TO_DATE`; su consulta aislada posterior es la ejecución
   `2684`, estado `success`.

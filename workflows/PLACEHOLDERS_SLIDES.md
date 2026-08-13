@@ -12,7 +12,7 @@
 
 - Diapositiva 3: tabla general de rendimiento.
 - Diapositiva 4: inversión, leads y CPA de Vivienda, Inversionistas y Apartaestudio.
-- Diapositiva 17: embudo de conversión y síntesis.
+- Diapositiva 17: espacios manuales para los dos dashboards de HubSpot.
 
 ## Placeholders
 
@@ -67,19 +67,23 @@
 - `{{TOTAL_PERFORMANCE}}`
 - `{{TOTAL_REMANENTE}}`
 
-### Embudo
+### HubSpot
 
-- `{{LEADS_REGISTRADOS}}`
-- `{{MQLS}}`
-- `{{NO_NICHO}}`
-- `{{PENDIENTES}}`
-- `{{VENTAS}}`
-- `{{SINTESIS_EMBUDO}}`
+La diapositiva 17 no contiene placeholders automáticos. Conserva únicamente el
+título `DASHBOARDS HUBSPOT` y el área libre para insertar manualmente:
+
+1. etapa del ciclo de vida;
+2. estado del contacto.
+
+La plantilla previa al cambio quedó respaldada en
+`1SsbJ5Ol7d5raGRL4VR0tjNx72NwCV3RE3UMVqCTB1qQ`.
 
 ## Validación
 
-- La plantilla conserva placeholders.
+- La plantilla conserva los placeholders automáticos de Ads y textos
+  estratégicos; HubSpot se completa manualmente.
 - La copia de prueba contiene cero placeholders pendientes.
 - Las diapositivas 3, 4, 5, 6, 15, 16 y 17 se revisaron visualmente sin desbordamientos.
 - Las gráficas históricas de julio se retiraron de las diapositivas 5 y 6; los análisis permanecen dinámicos.
-- El generador activo contiene 40 solicitudes de reemplazo. La aceptación `2711` cambió 47 ocurrencias y dejó cero placeholders residuales.
+- El generador activo contiene 34 solicitudes de reemplazo. Las seis solicitudes
+  CRM simuladas se retiraron al dejar la diapositiva 17 para inserción manual.
