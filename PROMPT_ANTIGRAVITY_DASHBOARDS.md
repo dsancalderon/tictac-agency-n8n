@@ -14,6 +14,12 @@ Ese archivo define el alcance, las fuentes, el mapa de diapositivas, las reglas
 de análisis, el diseño, las fases y los criterios de aceptación. Si no puedes
 acceder a ese archivo, detente y solicítalo; no improvises el contrato.
 
+Después lee `workflows/SLIDES_DASHBOARD_RUNBOOK.md`. Ese runbook contiene la
+secuencia corta de lectura/escritura, las fórmulas permitidas, el patrón visual
+aprobado de Métriku y los intentos fallidos que no deben repetirse. Usa la skill
+`kpi-dashboard-design` para decidir la jerarquía de KPI, contexto y lectura
+ejecutiva; la skill no autoriza a inventar métricas ausentes.
+
 INFORME FUENTE DE ESTA EJECUCIÓN:
 
 `[EL USUARIO DEBE PEGAR AQUÍ MANUALMENTE EL ENLACE QUE RECIBIÓ POR WHATSAPP]`
@@ -66,11 +72,16 @@ Objetivo:
 Trabaja por fases y valida antes de continuar:
 
 - Fase 1: duplica el informe e inventaría tablas, etiquetas y zonas manuales.
-- Fase 2: crea una página piloto de resumen y una de serie diaria; valida
-  fidelidad y sistema visual.
+- Fase 2: crea **únicamente** los pilotos de las diapositivas 3 (resumen) y 5
+  (serie diaria); valida fidelidad y sistema visual, entrega sus miniaturas y
+  **detente para esperar aprobación explícita del usuario**.
 - Fase 3: aplica el sistema al resto de páginas analíticas.
 - Fase 4: concilia cada dashboard con su tabla y audita las 29 miniaturas.
 - Fase 5: entrega la copia y el informe de validación.
+
+No inicies la Fase 3 en la misma ejecución que crea los pilotos, aunque los
+pilotos no presenten errores. La ausencia de respuesta no equivale a
+aprobación.
 
 Tipos de visualización preferidos:
 
@@ -81,6 +92,12 @@ Tipos de visualización preferidos:
 - plataforma: barras horizontales o dona solo si las categorías son legibles;
 - meta frente a resultado: comparación explícita entre meta mensual completa y
   acumulado al corte.
+
+Una serie temporal requiere al menos dos fechas válidas con información útil.
+Si contiene una sola fecha, solo ceros o datos insuficientes, no construyas una
+línea decorativa: reemplázala por aporte, inversión, eficiencia, avance a meta
+o un estado `Sin entrega`, según los campos realmente disponibles. Para
+Métriku aplica primero el patrón aprobado descrito en el runbook.
 
 Si encuentras una ambigüedad, una cifra inconsistente o una limitación de
 acceso, no inventes una solución. Registra la diapositiva afectada, explica la

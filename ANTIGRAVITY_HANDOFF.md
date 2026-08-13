@@ -27,11 +27,26 @@ Definición de terminado:
 
 ### Entrada obligatoria
 
-- Informe productivo aceptado:
-  [Google Slides](https://docs.google.com/presentation/d/1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk/edit)
-- Ejecución n8n que lo generó: `2746`, estado `success`, 22 de 22 nodos.
-- Periodo del artefacto: 1 al 13 de agosto de 2026, acumulado al momento de
-  generación.
+- Enlace del Google Slides que el usuario adjuntará o pegará manualmente en la
+  conversación actual con Antigravity.
+- El enlace válido es exclusivamente el que el usuario identifique como
+  `INFORME FUENTE DE ESTA EJECUCIÓN` en su mensaje. No reutilizar enlaces que
+  aparezcan en documentación, conversaciones anteriores o ejemplos.
+- El usuario obtiene este enlace por WhatsApp después de solicitar a n8n la
+  generación del informe. WhatsApp y n8n no intervienen en el trabajo de
+  Antigravity.
+- Si el usuario no adjunta o pega un enlace de Google Slides en la conversación
+  actual, detenerse y pedirlo antes de crear o modificar cualquier archivo.
+
+Flujo correcto:
+
+```text
+Usuario solicita informe por WhatsApp
+  → n8n genera el Slides con datos reales
+  → WhatsApp entrega el enlace al usuario
+  → el usuario pega manualmente ese enlace en Antigravity
+  → Antigravity duplica el Slides y edita únicamente la copia
+```
 
 ### Evidencia técnica
 
@@ -42,16 +57,19 @@ Definición de terminado:
   `1cPlo9OeUWpfW7H1ACnbwpT59MSR_yruErFkVhc7jHOo`;
 - plantilla anterior conservada como rollback:
   `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`;
-- informe privado de auditoría:
-  `1GAnmA_kJ0ebIlzOt3L3CcE_wx1OrFfqKsGgjScSxYuo`.
+- la ejecución `2746` y los artefactos históricos sirven únicamente como
+  evidencia del desarrollo; no determinan qué informe debe editarse en una
+  conversación nueva.
 
-El informe aceptado tiene 29 diapositivas, 20 tablas creadas por API y una
-tabla preexistente. No contiene dashboards automáticos ni placeholders
-`{{...}}` pendientes.
+El informe entregado manualmente por el usuario debe tener 29 diapositivas, 20
+tablas creadas por API y una tabla preexistente. No debe contener dashboards
+automáticos ni placeholders `{{...}}` pendientes. Si no cumple este contrato,
+informar la diferencia y esperar instrucciones antes de editarlo.
 
 ## 3. Reglas no negociables
 
-1. Crear una copia del informe aceptado y nombrarla de forma que indique
+1. Crear una copia del informe que el usuario adjuntó manualmente en la
+   conversación actual y nombrarla de forma que indique
    `DASHBOARDS + ANÁLISIS`. No editar el original.
 2. Usar únicamente las tablas y etiquetas visibles del Slides. No consultar
    Google Ads, Meta Ads, Sheets, HubSpot ni otras fuentes.
@@ -103,7 +121,7 @@ tabla, registrar la decisión y no cambiar los datos.
 | 15 | Google Ads PMAX, actividad | Dashboard general de conversiones, inversión, impresiones e interacciones disponibles |
 | 16 | Google Ads PMAX, meta frente a resultado | Comparativo meta–resultado y eficiencia; sin análisis de subasta |
 | 17 | HubSpot | Dos zonas manuales; no crear cifras ni embudo sintético |
-| 18 | Métriku | Resumen y tendencia diaria de Interacción con los datos disponibles |
+| 18 | Métriku | Resumen ejecutivo de volumen, inversión y eficiencia; usar tendencia solo si existen al menos dos fechas válidas con entrega |
 | 19 | Resumen general de Skala | Dashboard ejecutivo; comprobar meta total 150 |
 | 20 | Rendimiento por campaña de Skala | Comparativo Inversión, Vivienda y Feria Gran Salón |
 | 21 | Skala Vivienda, serie diaria | Tendencia temporal |
@@ -188,13 +206,18 @@ Validación antes de continuar:
 
 ### Fase 2 — Diseño de sistema visual
 
-Artefacto: una página piloto de serie diaria y una página piloto de resumen.
+Artefacto: únicamente la diapositiva 3 como piloto de resumen y la diapositiva
+5 como piloto de serie diaria.
 
 Validación antes de continuar:
 
 - cifras conciliadas con las tablas;
 - tipografía, color, títulos, ejes y análisis legibles;
-- aprobación de la convención para replicarla.
+- miniaturas grandes de ambas páginas revisadas;
+- aprobación explícita del usuario antes de iniciar la Fase 3.
+
+Después de entregar los pilotos, detenerse. No interpretar silencio, ausencia
+de errores ni acceso concedido como aprobación.
 
 ### Fase 3 — Producción del deck
 
@@ -246,6 +269,18 @@ Santi/Nicolás.
   no explicar diferencias de gasto con una historia no demostrada.
 - Algunas campañas pueden tener cero entrega o meta no definida. Esto es un
   estado válido, no un error que deba rellenarse.
+- El primer dashboard de Métriku priorizó `Interacción 0` y una serie diaria de
+  una sola fila en cero. Aunque era fiel a la tabla, no explicaba el rendimiento
+  del cliente. El patrón aprobado compara leads, inversión, CPA, participación
+  y avance a meta; está documentado en
+  `workflows/SLIDES_DASHBOARD_RUNBOOK.md`.
+- Un primer lote de rediseño se detuvo antes de escribir por
+  `ReferenceError: requiredRevisionId is not defined`. La variable de revisión
+  debe capturarse en una lectura fresca y pasarse con el mismo nombre al
+  control de escritura. No reintentar con una revisión antigua.
+- Imprimir la estructura completa de una diapositiva generó miles de líneas y
+  consumo innecesario. Usar lecturas parciales y resumir a IDs, texto, tablas y
+  transformaciones relevantes.
 
 ## 11. Criterios de aceptación final
 
@@ -268,3 +303,5 @@ Santi/Nicolás.
 - `workflows/GOOGLE_ADS_INTEGRATION.md`: límites de PMAX.
 - `workflows/META_ADS_INTEGRATION.md`: campañas y límites de Meta Ads.
 - `PROMPT_ANTIGRAVITY_DASHBOARDS.md`: instrucción lista para ejecutar.
+- `workflows/SLIDES_DASHBOARD_RUNBOOK.md`: procedimiento eficiente, fórmulas,
+  patrón aprobado de Métriku e intentos fallidos.

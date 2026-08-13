@@ -163,14 +163,18 @@ editable.
 
 ### Contrato de consumo para Antigravity
 
-1. Usar como entrada una copia del informe aceptado, nunca la plantilla ni el
-   artefacto fuente de producción.
-2. Derivar cada gráfico exclusivamente de la tabla visible de su diapositiva.
-3. Mantener `MONTH_TO_DATE`, `America/Bogota`, `MONTHLY_FULL_TARGET` y las
+1. El usuario debe pegar manualmente en la conversación el enlace recibido por
+   WhatsApp para esa ejecución. Antigravity no ejecuta n8n ni obtiene el enlace
+   por su cuenta.
+2. Usar como entrada una copia de ese informe, nunca la plantilla ni el
+   artefacto fuente de producción. Si falta el enlace en la conversación
+   actual, detenerse y solicitarlo.
+3. Derivar cada gráfico exclusivamente de la tabla visible de su diapositiva.
+4. Mantener `MONTH_TO_DATE`, `America/Bogota`, `MONTHLY_FULL_TARGET` y las
    fuentes declaradas.
-4. No inventar HubSpot, creativos, análisis de subasta, históricos ni métricas
+5. No inventar HubSpot, creativos, análisis de subasta, históricos ni métricas
    no incluidas en las tablas.
-5. Entregar una copia editable, un registro tabla→dashboard y evidencia de la
+6. Entregar una copia editable, un registro tabla→dashboard y evidencia de la
    revisión visual de las 29 diapositivas.
 
 Las instrucciones completas están en `../ANTIGRAVITY_HANDOFF.md` y el prompt
