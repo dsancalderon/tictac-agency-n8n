@@ -4,8 +4,9 @@
 
 Esta integración incorpora métricas reales de la campaña Performance Max de
 Kinku al generador de informes. Meta Ads también está conectado en producción;
-HubSpot se inserta manualmente y Google Sheets es la siguiente integración
-pendiente para configuración, metas y presupuestos.
+Google Sheets aporta metas y presupuestos para Pekín, Skala y Métriku. El JSON
+local genera tablas fuente y etiquetas para una IA externa. HubSpot se inserta
+manualmente.
 
 ## Recursos de producción
 
@@ -28,7 +29,9 @@ cifrada de n8n.
 Incorporar Meta Ads Real
   -> Consultar Google Ads Kinku
   -> Incorporar Google Ads Real
-  -> Preparar Solicitud Gemini
+  -> Consultar desgloses Meta
+  -> Preparar Datos del Informe
+  -> Preparar Placeholders de Slides
 ```
 
 `Consultar Google Ads Kinku` usa el nodo oficial de Google Ads de n8n:
@@ -57,8 +60,8 @@ vez de reemplazar silenciosamente los datos con valores simulados.
 | `interactions` | `googleAds.interactions` | Auditoría |
 | `videoTrueviewViews` | Respuesta del nodo oficial | Diagnóstico de video |
 
-El KPI de PMAX sigue siendo una meta de configuración temporal. Debe migrarse a
-la tabla maestra cuando se implemente Google Sheets.
+El KPI y el presupuesto mensual de PMAX se leen de la pestaña del mes vigente
+en Google Sheets bajo la política `MONTHLY_FULL_TARGET`.
 
 ## Contrato temporal del informe
 
@@ -78,8 +81,8 @@ El generador publica `reportingContract.version = 1.0` con estas reglas:
 
 Cada solicitud vuelve a consultar Google Ads desde el primer día del mes. No
 suma resultados guardados de cortes anteriores. En el próximo mes, el inicio se
-desplaza automáticamente al nuevo día 1. Meta Ads ya consume estos mismos
-límites; HubSpot y Excel/Google Sheets deberán hacerlo cuando se conecten.
+desplaza automáticamente al nuevo día 1. Meta Ads y Google Sheets ya consumen
+estos mismos límites; HubSpot deberá hacerlo cuando se conecte.
 
 ## Contrato de procedencia
 
@@ -91,13 +94,14 @@ La salida del nodo de normalización contiene:
   "dataSources": {
     "googleAds": "live",
     "metaAds": "live",
-    "crm": "mock"
+    "sheets": "live",
+    "crm": "manual"
   }
 }
 ```
 
-La presentación y el mensaje final no deben describir el conjunto completo como
-real mientras existan fuentes con valor `mock`.
+La presentación y el mensaje final identifican Google Ads, Meta Ads y Sheets
+como fuentes reales; HubSpot se declara explícitamente como inserción manual.
 
 ## Validación previa a producción
 
@@ -131,14 +135,12 @@ El workflow temporal de esta validación fue desactivado y eliminado.
    nodo `Consultar Google Ads Kinku` y un nodo `Incorporar Google Ads Real`.
 2. Ejecutar el generador con `clientId`, `clientName` y un `customerPhone`
    autorizado.
-3. Revisar en la ejecución los nodos de Google Ads, normalización, Gemini,
+3. Revisar en la ejecución los nodos de Google Ads, normalización, datos del informe,
    Drive, Slides, permiso de lector y YCloud.
 4. Comprobar que los cinco placeholders PMAX coinciden con la salida
    normalizada.
-5. Confirmar que las 40 solicitudes de reemplazo incluyen
-   `ANALISIS_TENDENCIA_VIVIENDA`, `RECOMENDACION_AGENCIA_VIVIENDA`,
-   `GOOGLE_ADS_ANALISIS`, `GOOGLE_ADS_RECOMENDACION` y
-   `SINTESIS_EMBUDO`.
+5. Confirmar que PMAX muestra tablas de actividad y meta frente a resultado,
+   además de las etiquetas de fuente, tipo, criterios y periodo.
 6. Abrir la presentación final y verificar visualmente los valores y el texto de
    procedencia.
 7. Confirmar una sola notificación de WhatsApp con un enlace válido.
@@ -163,8 +165,11 @@ El workflow temporal de esta validación fue desactivado y eliminado.
   leyendo el JSON explícitamente en UTF-8.
 - La inspección visual encontró capturas históricas contradictorias en las
   diapositivas 15 y 16. Se eliminaron de la plantilla y del informe definitivo;
-  esas páginas ahora dependen de `GOOGLE_ADS_ANALISIS` y
-  `GOOGLE_ADS_RECOMENDACION`. El total pasó de 38 a 40 reemplazos.
+  esas páginas ahora reciben dos tablas fuente de PMAX y etiquetas para una IA
+  externa.
+- Gemini se retiró posteriormente del generador para eliminar la dependencia de
+  facturación; las incidencias de Gemini anteriores se conservan únicamente
+  como historial.
 
 ## Aceptación de producción del 12 de agosto de 2026
 
@@ -186,6 +191,16 @@ El workflow temporal de esta validación fue desactivado y eliminado.
 - La versión de producción `9cf08ff0-36fa-481c-92d1-9f0892dff35b` aplica el
   contrato `MONTH_TO_DATE`; su consulta aislada posterior es la ejecución
   `2684`, estado `success`.
+
+La versión productiva vigente al 13 de agosto de 2026 es
+`9cfffeb3-0e24-443c-8e51-344bb1efe2a7`, con 22 nodos. La aceptación privada más reciente validó las dos tablas PMAX
+de las diapositivas 15 y 16, sin compartir la copia ni enviar WhatsApp:
+`1GAnmA_kJ0ebIlzOt3L3CcE_wx1OrFfqKsGgjScSxYuo`.
+
+La aceptación productiva `2746` completó permiso de lector y WhatsApp. Las
+tablas PMAX del informe `1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk`
+coinciden con la consulta real de Google Ads y no incluyen análisis de subasta
+ni datos no consultados.
 
 ## Limpieza posterior a la aceptación
 

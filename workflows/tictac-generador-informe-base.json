@@ -28,7 +28,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst timezone = 'America/Bogota';\nconst periodEnd = new Date();\nconst localParts = Object.fromEntries(\n  new Intl.DateTimeFormat('en-CA', {\n    timeZone: timezone,\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit'\n  }).formatToParts(periodEnd)\n    .filter((part) => part.type !== 'literal')\n    .map((part) => [part.type, part.value])\n);\nconst periodStartDate = `${localParts.year}-${localParts.month}-01`;\nconst periodEndDate = `${localParts.year}-${localParts.month}-${localParts.day}`;\nconst periodStart = new Date(`${periodStartDate}T00:00:00-05:00`);\nconst periodDaysElapsed = Number(localParts.day);\nconst formatPeriodDate = (date) => new Intl.DateTimeFormat('es-CO', {\n  timeZone: 'UTC',\n  day: 'numeric',\n  month: 'long',\n  year: 'numeric'\n}).format(new Date(`${date}T12:00:00Z`));\nconst periodLabel = `${formatPeriodDate(periodStartDate)} al ${formatPeriodDate(periodEndDate)}`;\nconst reportingContract = {\n  version: '1.0',\n  mode: 'MONTH_TO_DATE',\n  cadenceDays: 7,\n  timezone,\n  periodStartDate,\n  periodEndDate,\n  periodStart: periodStart.toISOString(),\n  periodEnd: periodEnd.toISOString(),\n  daysElapsed: periodDaysElapsed,\n  accumulationStrategy: 'SOURCE_REQUERY_NO_ROLLUP'\n};\nconst clientConfig = {\n  clientId: input.clientId || 'CLI-001',\n  clientName: input.clientName || 'Proyecto Pekín',\n  hubspotCompanyId: '<CONFIGURE_HUBSPOT_COMPANY_ID>',\n  slidesTemplateId: '16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0',\n  driveFolderId: '<CONFIGURE_GOOGLE_DRIVE_FOLDER_ID>',\n  periodLeadGoal: 100,\n  periodInvestmentGoal: 5000000,\n  timezone\n};\nreturn [{ json: {\n  ...input,\n  ...clientConfig,\n  periodMode: reportingContract.mode,\n  reportCadenceDays: reportingContract.cadenceDays,\n  periodStartDate,\n  periodEndDate,\n  periodStart: reportingContract.periodStart,\n  periodEnd: reportingContract.periodEnd,\n  periodDaysElapsed,\n  periodLabel,\n  reportingContract\n} }];"
+        "jsCode": "const input = $input.first().json;\nconst timezone = 'America/Bogota';\nconst periodEnd = new Date();\nconst localParts = Object.fromEntries(\n  new Intl.DateTimeFormat('en-CA', {\n    timeZone: timezone,\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit'\n  }).formatToParts(periodEnd)\n    .filter((part) => part.type !== 'literal')\n    .map((part) => [part.type, part.value])\n);\nconst periodStartDate = `${localParts.year}-${localParts.month}-01`;\nconst periodEndDate = `${localParts.year}-${localParts.month}-${localParts.day}`;\nconst periodStart = new Date(`${periodStartDate}T00:00:00-05:00`);\nconst periodDaysElapsed = Number(localParts.day);\nconst monthTabs = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];\nconst sheetMonthTab = monthTabs[Number(localParts.month) - 1];\nconst formatPeriodDate = (date) => new Intl.DateTimeFormat('es-CO', {\n  timeZone: 'UTC',\n  day: 'numeric',\n  month: 'long',\n  year: 'numeric'\n}).format(new Date(`${date}T12:00:00Z`));\nconst periodLabel = `${formatPeriodDate(periodStartDate)} al ${formatPeriodDate(periodEndDate)}`;\nconst reportingContract = {\n  version: '1.0',\n  mode: 'MONTH_TO_DATE',\n  cadenceDays: 7,\n  timezone,\n  periodStartDate,\n  periodEndDate,\n  periodStart: periodStart.toISOString(),\n  periodEnd: periodEnd.toISOString(),\n  daysElapsed: periodDaysElapsed,\n  accumulationStrategy: 'SOURCE_REQUERY_NO_ROLLUP',\n  goalPolicy: 'MONTHLY_FULL_TARGET'\n};\nconst clientConfig = {\n  clientId: input.clientId || 'CLI-001',\n  clientName: input.clientName || 'Proyecto Pekín',\n  hubspotCompanyId: '<CONFIGURE_HUBSPOT_COMPANY_ID>',\n  slidesTemplateId: '1cPlo9OeUWpfW7H1ACnbwpT59MSR_yruErFkVhc7jHOo',\n  driveFolderId: '<CONFIGURE_GOOGLE_DRIVE_FOLDER_ID>',\n  sheetSpreadsheetId: '1amDTwQEPHhBfM47T80O3KAxQ7FGY1gonGzXhXuAnkSU',\n  sheetMonthTab,\n  timezone\n};\nreturn [{ json: {\n  ...input,\n  ...clientConfig,\n  periodMode: reportingContract.mode,\n  reportCadenceDays: reportingContract.cadenceDays,\n  periodStartDate,\n  periodEndDate,\n  periodStart: reportingContract.periodStart,\n  periodEnd: reportingContract.periodEnd,\n  periodDaysElapsed,\n  periodLabel,\n  reportingContract\n} }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -41,7 +41,51 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst metrics = {\n  recognition: { kpi: 125000, actual: 14014, performance: 11.21, budget: 500000, investment: 48732 },\n  investors: { kpi: 120, leads: 62, performance: 51.67, budget: 1200000, investment: 288141, cpa: 5145 },\n  housing: { kpi: 40, leads: 17, performance: 42.50, budget: 400000, investment: 97517, cpa: 5736 },\n  studio: { investment: 95888, leads: 6, cpa: 15981 },\n  pmax: { kpi: 30, leads: 24, performance: 80.00, budget: 1200000, investment: 381000 },\n  totals: { targetLeads: 190, generatedLeads: 103, performance: 54.21, remainder: 2388801 },\n  leadsRegistered: 103,\n  mqls: 41,\n  noNicho: 12,\n  pendingClassification: 8,\n  sales: 5,\n  actualInvestment: 4650000\n};\nconst leadAchievement = Number(((metrics.leadsRegistered / input.periodLeadGoal) * 100).toFixed(1));\nconst cpl = Math.round(metrics.actualInvestment / metrics.leadsRegistered);\nreturn [{ json: { ...input, ...metrics, leadAchievement, cpl, dataSource: 'mock' } }];"
+        "url": "={{ 'https://sheets.googleapis.com/v4/spreadsheets/' + $json.sheetSpreadsheetId + '/values/' + encodeURIComponent($json.sheetMonthTab + '!A1:J200') }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "valueRenderOption",
+              "value": "UNFORMATTED_VALUE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        360,
+        -224
+      ],
+      "id": "b2444444-2444-4244-8244-244444444444",
+      "name": "Leer Metas Google Sheets",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tLT297bB84V3jsXt",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Cargar Configuración Temporal').first().json;\nconst response = $input.first().json;\nconst values = response.values;\nif (!Array.isArray(values) || values.length < 3) throw new Error(`Google Sheets no devolvió datos válidos para ${base.sheetMonthTab}.`);\nconst normalize = (value) => String(value ?? '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').trim().toUpperCase();\nconst toNumber = (value, field, campaign) => { const result = Number(value); if (!Number.isFinite(result)) throw new Error(`Sheets: ${field} inválido para ${campaign}.`); return result; };\nconst sectionRows = (flowName) => {\n  const start = values.findIndex((row) => normalize(row?.[0]) === normalize(flowName));\n  if (start < 0) throw new Error(`Sheets: no se encontró ${flowName} en ${base.sheetMonthTab}.`);\n  const nextOffset = values.slice(start + 1).findIndex((row) => normalize(row?.[0]).startsWith('FLOW '));\n  const end = nextOffset < 0 ? values.length : start + 1 + nextOffset;\n  return values.slice(start + 2, end).filter((row) => normalize(row?.[0]) === normalize(base.sheetMonthTab) && normalize(row?.[3]) && !normalize(row?.[3]).startsWith('TOTAL '));\n};\nconst goal = (key, row, required = true) => {\n  if (!row) {\n    if (required) throw new Error(`Sheets: falta la meta obligatoria ${key} para ${base.sheetMonthTab}.`);\n    return { goalDefined: false, kpi: null, costPerResultGoal: null, budget: null, sheetCampaign: null };\n  }\n  return { goalDefined: true, kpi: toNumber(row[4], 'KPI', key), costPerResultGoal: toNumber(row[5], 'COSTO POR RESULTADO', key), budget: toNumber(row[6], 'INVERSIÓN', key), sheetCampaign: String(row[3]).trim() };\n};\nconst find = (rows, predicate) => rows.find((row) => predicate({ medium: normalize(row[1]), objective: normalize(row[2]), campaign: normalize(row[3]) }));\nconst pekinRows = sectionRows('FLOW PROYECTO PEKIN');\nconst recognition = goal('Reconocimiento Pekín', find(pekinRows, (row) => row.medium === 'META' && row.campaign.startsWith('RECONOCIMIENTO')));\nconst investors = goal('Inversión Pekín', find(pekinRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign === 'INVERSION'));\nconst housing = goal('Vivienda Pekín', find(pekinRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign === 'VIVIENDA'), false);\nconst studio = goal('Apartaestudios Pekín', find(pekinRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign === 'APARTAESTUDIOS'));\nconst pmax = goal('Google PMAX Pekín', find(pekinRows, (row) => row.medium.includes('GOOGLE PERFORMANCE MAX') && row.objective === 'LEADS'));\nconst skalaRows = sectionRows('FLOW PROYECTO SKALA');\nconst skalaGoals = {\n  investment: goal('Inversión Skala', find(skalaRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign === 'INVERSION')),\n  housing: goal('Vivienda Skala', find(skalaRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign === 'VIVIENDA')),\n  fair: goal('Feria Skala', find(skalaRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign.startsWith('FERIA')))\n};\nconst metrikuRows = sectionRows('FLOW METRIKU');\nconst metrikuGoals = {\n  interaction: goal('Interacción Métriku', find(metrikuRows, (row) => row.medium === 'META' && row.objective === 'INTERACCION' && row.campaign.includes('VIDEO SOFI Y FERA'))),\n  owner: goal('B2C Propietario Métriku', find(metrikuRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign.includes('PROPIETARIO'))),\n  tenant: goal('B2C Arrendatario Métriku', find(metrikuRows, (row) => row.medium === 'META' && row.objective === 'LEADS' && row.campaign.includes('ARRENDATARIO'))),\n  fair: { goalDefined: false, kpi: null, costPerResultGoal: null, budget: null, sheetCampaign: 'Feria Gran Salón' }\n};\nconst leadGoals = [investors, housing, studio, pmax].filter((item) => item.goalDefined);\nconst periodLeadGoal = leadGoals.reduce((sum, item) => sum + item.kpi, 0);\nconst periodInvestmentGoal = [recognition, investors, housing, studio, pmax].filter((item) => item.goalDefined).reduce((sum, item) => sum + item.budget, 0);\nconst skalaTarget = Object.values(skalaGoals).reduce((sum, item) => sum + Number(item.kpi || 0), 0);\nconst declaredSectionTotal = (flowName) => {\n  const start = values.findIndex((row) => normalize(row?.[0]) === normalize(flowName));\n  if (start < 0) throw new Error(`Sheets: no se encontró ${flowName} en ${base.sheetMonthTab}.`);\n  const nextOffset = values.slice(start + 1).findIndex((row) => normalize(row?.[0]).startsWith('FLOW '));\n  const end = nextOffset < 0 ? values.length : start + 1 + nextOffset;\n  const totalRow = values.slice(start + 1, end).find((row) => normalize(row?.[3]).startsWith('TOTAL LEADS'));\n  if (!totalRow) throw new Error(`Sheets: falta la fila Total Leads Estimados de ${flowName} en ${base.sheetMonthTab}.`);\n  return toNumber(totalRow[4], 'TOTAL LEADS ESTIMADOS', flowName);\n};\nconst skalaDeclaredTotal = declaredSectionTotal('FLOW PROYECTO SKALA');\nif (skalaTarget !== skalaDeclaredTotal) {\n  throw new Error(`Sheets: Skala declara ${skalaDeclaredTotal} leads, pero sus campañas suman ${skalaTarget}. Corrige la hoja antes de generar el informe.`);\n}\nconst sheetWarnings = [];\nreturn [{ json: {\n  ...base, recognition, investors, housing, studio, pmax, skalaGoals, metrikuGoals, periodLeadGoal, periodInvestmentGoal, sheetWarnings,\n  sheets: { source: 'live', spreadsheetId: base.sheetSpreadsheetId, tab: base.sheetMonthTab, range: response.range, goalPolicy: 'MONTHLY_FULL_TARGET', projectSection: 'FLOW PROYECTO PEKIN', sections: ['FLOW PROYECTO PEKIN', 'FLOW METRIKU', 'FLOW PROYECTO SKALA'], optionalGoalsMissing: [housing.goalDefined ? null : 'Vivienda Pekín', 'Feria Métriku'].filter(Boolean) }\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        -224
+      ],
+      "id": "b2555555-2555-4255-8255-255555555555",
+      "name": "Aplicar Metas Google Sheets"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst performance = (actual, goal) => goal?.goalDefined && Number(goal.kpi) > 0\n  ? Number(((actual / Number(goal.kpi)) * 100).toFixed(2))\n  : null;\nconst metrics = {\n  recognition: { ...input.recognition, actual: 14014, performance: performance(14014, input.recognition), investment: 48732 },\n  investors: { ...input.investors, leads: 62, performance: performance(62, input.investors), investment: 288141, cpa: 5145 },\n  housing: { ...input.housing, leads: 17, performance: performance(17, input.housing), investment: 97517, cpa: 5736 },\n  studio: { ...input.studio, investment: 95888, leads: 6, performance: performance(6, input.studio), cpa: 15981 },\n  pmax: { ...input.pmax, leads: 24, performance: performance(24, input.pmax), investment: 381000 },\n  totals: { targetLeads: input.periodLeadGoal, generatedLeads: 0, performance: 0, remainder: input.periodInvestmentGoal },\n  leadsRegistered: 0,\n  mqls: 0,\n  noNicho: 0,\n  pendingClassification: 0,\n  sales: 0,\n  actualInvestment: 0\n};\nreturn [{ json: { ...input, ...metrics, dataSource: 'mixed', dataSources: { sheets: 'live', googleAds: 'mock', metaAds: 'mock', crm: 'manual' } } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -54,78 +98,166 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst metricsForAI = {\n  project: input.clientName,\n  reportingContract: input.reportingContract,\n  periodLabel: input.periodLabel,\n  periodLeadGoal: input.periodLeadGoal,\n  periodInvestmentGoal: input.periodInvestmentGoal,\n  recognition: input.recognition,\n  investors: input.investors,\n  housing: input.housing,\n  studio: input.studio,\n  pmax: input.pmax,\n  totals: input.totals,\n  crm: { leadsRegistered: input.leadsRegistered, mqls: input.mqls, noNicho: input.noNicho, pendingClassification: input.pendingClassification, sales: input.sales },\n  leadAchievement: input.leadAchievement,\n  cpl: input.cpl,\n  actualInvestment: input.actualInvestment\n};\nconst prompt = [\n  'Actua como analista senior de performance de Tic Tac Agency.',\n  'Analiza exclusivamente los datos suministrados. No inventes cifras, causas ni resultados.',\n  'Todos los datos representan el acumulado del mes desde el dia 1 hasta el momento de generacion indicado en reportingContract.',\n  'No describas los datos como ultimos 7 dias ni como una semana aislada. La revision ocurre cada 7 dias, pero el periodo siempre es MONTH_TO_DATE.',\n  'Redacta en espanol ejecutivo de Colombia, claro, breve, formal, proactivo y orientado a decisiones.',\n  'Cada texto debe tener entre 35 y 70 palabras y no debe usar Markdown.',\n  'ANALISIS_TENDENCIA_VIVIENDA: explica los resultados principales, cumplimiento, eficiencia y tendencia acumulada del mes.',\n  'RECOMENDACION_AGENCIA_VIVIENDA: propone acciones concretas y prudentes para el proximo corte acumulado.',\n  'SINTESIS_EMBUDO: resume calidad y avance acumulado del embudo CRM, mencionando MQL, pendientes y ventas.',\n  'Devuelve solamente el objeto JSON solicitado.',\n  `DATOS DEL PERIODO:\\n${JSON.stringify(metricsForAI)}`\n].join('\\n\\n');\nconst geminiRequestBody = {\n  contents: [{ role: 'user', parts: [{ text: prompt }] }],\n  generationConfig: {\n    temperature: 0.25,\n    topP: 0.8,\n    maxOutputTokens: 700,\n    responseMimeType: 'application/json',\n    responseJsonSchema: {\n      type: 'object',\n      additionalProperties: false,\n      required: ['ANALISIS_TENDENCIA_VIVIENDA', 'RECOMENDACION_AGENCIA_VIVIENDA', 'SINTESIS_EMBUDO'],\n      properties: {\n        ANALISIS_TENDENCIA_VIVIENDA: { type: 'string' },\n        RECOMENDACION_AGENCIA_VIVIENDA: { type: 'string' },\n        SINTESIS_EMBUDO: { type: 'string' }\n      }\n    }\n  }\n};\nreturn [{ json: { ...input, geminiRequestBody } }];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1200,
-        0
-      ],
-      "id": "b4444444-4444-4444-8444-444444444444",
-      "name": "Preparar Solicitud Gemini"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
+        "url": "https://graph.facebook.com/v26.0/act_302924541795503/insights",
+        "sendQuery": true,
+        "queryParameters": {
           "parameters": [
             {
-              "name": "Content-Type",
-              "value": "application/json"
+              "name": "level",
+              "value": "campaign"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_id,campaign_name,spend,impressions,reach,actions"
+            },
+            {
+              "name": "time_range",
+              "value": "={{ JSON.stringify({ since: $('Incorporar Google Ads Real').first().json.periodStartDate, until: $('Incorporar Google Ads Real').first().json.periodEndDate }) }}"
+            },
+            {
+              "name": "time_increment",
+              "value": "1"
+            },
+            {
+              "name": "limit",
+              "value": "500"
             }
           ]
         },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { ...$json.geminiRequestBody, \"generationConfig\": { ...$json.geminiRequestBody.generationConfig, \"maxOutputTokens\": 2048, \"thinkingConfig\": { \"thinkingLevel\": \"low\" } } } }}",
-        "options": {
-          "timeout": 60000
-        }
+        "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1440,
-        0
+        1200,
+        224
       ],
-      "id": "b4555555-5555-4555-8555-555555555555",
-      "name": "Generar Analisis con Gemini",
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 5000,
+      "id": "c1111111-1111-4111-8111-111111111111",
+      "name": "Consultar Tendencia Meta Kinku",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "P7ZwZBfxEAmLeZnO",
-          "name": "Gemini API - Tic Tac"
+          "id": "b5gD05i329cq7iKG",
+          "name": "Meta Ads - Kinku"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "const source = $('Preparar Solicitud Gemini').first().json;\nconst response = $input.first().json;\nconst candidate = response.candidates?.[0];\nconst finishReason = candidate?.finishReason || 'UNKNOWN';\nconst text = candidate?.content?.parts?.map((part) => part.text || '').join('').trim();\nif (!text) {\n  const blockReason = response.promptFeedback?.blockReason || 'sin detalle';\n  throw new Error(`Gemini no devolvio contenido. finishReason=${finishReason}; blockReason=${blockReason}`);\n}\nlet strategicCopy;\ntry {\n  strategicCopy = JSON.parse(text);\n} catch (error) {\n  throw new Error(`Gemini devolvio JSON invalido: ${error.message}`);\n}\nconst required = ['ANALISIS_TENDENCIA_VIVIENDA', 'RECOMENDACION_AGENCIA_VIVIENDA', 'SINTESIS_EMBUDO'];\nfor (const field of required) {\n  if (typeof strategicCopy[field] !== 'string' || !strategicCopy[field].trim()) {\n    throw new Error(`Respuesta Gemini incompleta: falta ${field}`);\n  }\n  strategicCopy[field] = strategicCopy[field].trim();\n}\nconst { geminiRequestBody, ...cleanSource } = source;\nreturn [{ json: { ...cleanSource, strategicCopy, aiSource: 'gemini-3.5-flash', geminiUsage: response.usageMetadata || null } }];"
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "https://graph.facebook.com/v26.0/act_302924541795503/insights",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "campaign"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_id,campaign_name,spend,impressions,reach,actions"
+            },
+            {
+              "name": "time_range",
+              "value": "={{ JSON.stringify({ since: $('Incorporar Google Ads Real').first().json.periodStartDate, until: $('Incorporar Google Ads Real').first().json.periodEndDate }) }}"
+            },
+            {
+              "name": "breakdowns",
+              "value": "age,gender"
+            },
+            {
+              "name": "limit",
+              "value": "500"
+            }
+          ]
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        1680,
-        0
+        1440,
+        224
       ],
-      "id": "b4666666-6666-4666-8666-666666666666",
-      "name": "Validar Analisis Gemini"
+      "id": "c2222222-2222-4222-8222-222222222222",
+      "name": "Consultar Demografia Meta Kinku",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "b5gD05i329cq7iKG",
+          "name": "Meta Ads - Kinku"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst number = (value) => Number(value).toLocaleString('en-US');\nconst money = (value) => `$${number(value)}`;\nconst pct = (value) => `${Number(value).toFixed(2)}%`;\nconst google = input.googleAds || {};\nconst googleAdsAnalysis = `En el acumulado mensual del ${input.periodLabel}, la campaña ${google.campaignName || 'PMAX'} registró ${number(google.impressions || 0)} impresiones, ${number(google.interactions || 0)} interacciones y ${number(google.conversions || 0)} conversiones con una inversión de ${money(google.investment || 0)}. El costo promedio por conversión fue ${money(google.cpa || 0)} y el cumplimiento frente al KPI configurado de ${number(input.pmax.kpi)} conversiones alcanzó ${pct(input.pmax.performance)}. Los datos provienen directamente de Google Ads.`;\nconst googleAdsRecommendation = `Para el próximo corte acumulado recomendamos mantener la pauta activa y monitorear diariamente el costo por conversión, la calidad de los formularios y la distribución del presupuesto mensual. Antes de ampliar inversión, conviene confirmar en el CRM que las ${number(google.conversions || 0)} conversiones acumuladas corresponden a oportunidades válidas y ajustar creatividades o segmentación solo con evidencia de varios cortes del mismo mes.`;\nconst replacements = {\n  '{{NOMBRE_PROYECTO_MAYUS}}': input.clientName.toUpperCase(),\n  '{{META_RECONOCIMIENTO_KPI}}': number(input.recognition.kpi),\n  '{{META_RECONOCIMIENTO_REAL}}': number(input.recognition.actual),\n  '{{META_RECONOCIMIENTO_PERFORMANCE}}': pct(input.recognition.performance),\n  '{{META_RECONOCIMIENTO_PRESUPUESTO}}': money(input.recognition.budget),\n  '{{META_RECONOCIMIENTO_INVERSION}}': money(input.recognition.investment),\n  '{{META_INVERSIONISTAS_KPI}}': number(input.investors.kpi),\n  '{{META_INVERSIONISTAS_LEADS}}': number(input.investors.leads),\n  '{{META_INVERSIONISTAS_PERFORMANCE}}': pct(input.investors.performance),\n  '{{META_INVERSIONISTAS_PRESUPUESTO}}': money(input.investors.budget),\n  '{{META_INVERSIONISTAS_INVERSION}}': money(input.investors.investment),\n  '{{META_INVERSIONISTAS_CPA}}': money(input.investors.cpa),\n  '{{META_VIVIENDA_KPI}}': number(input.housing.kpi),\n  '{{META_VIVIENDA_LEADS}}': number(input.housing.leads),\n  '{{META_VIVIENDA_PERFORMANCE}}': pct(input.housing.performance),\n  '{{META_VIVIENDA_PRESUPUESTO}}': money(input.housing.budget),\n  '{{META_VIVIENDA_INVERSION}}': money(input.housing.investment),\n  '{{META_VIVIENDA_CPA}}': money(input.housing.cpa),\n  '{{META_APARTAESTUDIO_INVERSION}}': money(input.studio.investment),\n  '{{META_APARTAESTUDIO_LEADS}}': number(input.studio.leads),\n  '{{META_APARTAESTUDIO_CPA}}': money(input.studio.cpa),\n  '{{GOOGLE_PMAX_KPI}}': number(input.pmax.kpi),\n  '{{GOOGLE_PMAX_LEADS}}': number(input.pmax.leads),\n  '{{GOOGLE_PMAX_PERFORMANCE}}': pct(input.pmax.performance),\n  '{{GOOGLE_PMAX_PRESUPUESTO}}': money(input.pmax.budget),\n  '{{GOOGLE_PMAX_INVERSION}}': money(input.pmax.investment),\n  '{{TOTAL_META_LEADS}}': number(input.totals.targetLeads),\n  '{{TOTAL_LEADS_GENERADOS}}': number(input.totals.generatedLeads),\n  '{{TOTAL_PERFORMANCE}}': pct(input.totals.performance),\n  '{{TOTAL_REMANENTE}}': money(input.totals.remainder),\n  '{{ANALISIS_TENDENCIA_VIVIENDA}}': input.strategicCopy.ANALISIS_TENDENCIA_VIVIENDA,\r\n  '{{RECOMENDACION_AGENCIA_VIVIENDA}}': input.strategicCopy.RECOMENDACION_AGENCIA_VIVIENDA,\r\n  '{{GOOGLE_ADS_ANALISIS}}': googleAdsAnalysis,\n  '{{GOOGLE_ADS_RECOMENDACION}}': googleAdsRecommendation,\n};\nreturn [{ json: { ...input, replacements, reportStatus: 'mixed_ready', reportUrl: '<GENERATED_GOOGLE_SLIDES_URL>' } }];"
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "https://graph.facebook.com/v26.0/act_302924541795503/insights",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "campaign"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_id,campaign_name,spend,impressions,reach,actions"
+            },
+            {
+              "name": "time_range",
+              "value": "={{ JSON.stringify({ since: $('Incorporar Google Ads Real').first().json.periodStartDate, until: $('Incorporar Google Ads Real').first().json.periodEndDate }) }}"
+            },
+            {
+              "name": "breakdowns",
+              "value": "publisher_platform"
+            },
+            {
+              "name": "limit",
+              "value": "500"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        224
+      ],
+      "id": "c3333333-3333-4333-8333-333333333333",
+      "name": "Consultar Plataformas Meta Kinku",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "b5gD05i329cq7iKG",
+          "name": "Meta Ads - Kinku"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Incorporar Google Ads Real').first().json;\nconst daily = $('Consultar Tendencia Meta Kinku').first().json.data || [];\nconst demographic = $('Consultar Demografia Meta Kinku').first().json.data || [];\nconst platform = $input.first().json.data || [];\nconst campaignIds = {\n  housing: '120238960041500774',\n  investors: '120238954925180774',\n  skalaHousing: '120248651700020774',\n  skalaInvestment: '120248650813200774',\n  metrikuInteraction: '120242733279060774'\n};\nconst actionValue = (row, type) => Number((row?.actions || []).find((action) => action.action_type === type)?.value || 0);\nconst byCampaign = (rows, id) => rows.filter((row) => String(row.campaign_id) === id);\nconst dailySeries = (id, actionType = 'lead') => {\n  const rows = byCampaign(daily, id).map((row) => ({\n    date: String(row.date_start || ''),\n    result: actionValue(row, actionType),\n    investment: Number(row.spend || 0),\n    impressions: Number(row.impressions || 0),\n    reach: Number(row.reach || 0)\n  }));\n  rows.sort((a, b) => a.date.localeCompare(b.date));\n  return rows.length ? rows : [{ date: base.periodStartDate, result: 0, investment: 0, impressions: 0, reach: 0 }];\n};\nconst demographicSeries = (id) => {\n  const ages = ['18-24', '25-34', '35-44', '45-54', '55-64', '65+', 'unknown'];\n  const grouped = Object.fromEntries(ages.map((age) => [age, { women: 0, men: 0 }]));\n  for (const row of byCampaign(demographic, id)) {\n    const age = String(row.age || 'unknown').toLowerCase();\n    if (!grouped[age]) grouped[age] = { women: 0, men: 0 };\n    if (row.gender === 'female') grouped[age].women += actionValue(row, 'lead');\n    if (row.gender === 'male') grouped[age].men += actionValue(row, 'lead');\n  }\n  const rows = Object.entries(grouped).map(([age, totals]) => ({ age: age === 'unknown' ? 'Desconocido' : age, ...totals }));\n  return rows.some((row) => row.women || row.men) ? rows : [{ age: 'Sin datos', women: 0, men: 0 }];\n};\nconst platformSeries = (id) => {\n  const grouped = {};\n  for (const row of byCampaign(platform, id)) {\n    const name = String(row.publisher_platform || 'otro');\n    grouped[name] = (grouped[name] || 0) + actionValue(row, 'lead');\n  }\n  const rows = Object.entries(grouped).map(([name, result]) => ({ name, result })).sort((a, b) => b.result - a.result);\n  return rows.length ? rows : [{ name: 'Sin datos', result: 0 }];\n};\nconst metricSummary = (metric, unit) => ({\n  campaignId: metric.campaignId || null,\n  campaignName: metric.campaignName || null,\n  unit,\n  goalDefined: metric.goalDefined === true,\n  goal: metric.goalDefined === true ? Number(metric.kpi || 0) : null,\n  result: metric.actionType === 'post_engagement' ? Number(metric.actual || 0) : Number(metric.leads || 0),\n  performance: Number.isFinite(Number(metric.performance)) ? Number(metric.performance) : null,\n  budget: metric.goalDefined === true ? Number(metric.budget || 0) : null,\n  investment: Number(metric.investment || 0),\n  cpa: Number(metric.cpa || 0),\n  impressions: Number(metric.impressions || 0),\n  reach: Number(metric.reach || 0)\n});\nconst reportDataV1 = {\n  version: '1.0',\n  generatedAt: new Date().toISOString(),\n  period: {\n    mode: base.periodMode,\n    label: base.periodLabel,\n    timezone: base.timezone,\n    startDate: base.periodStartDate,\n    endDate: base.periodEndDate,\n    daysElapsed: base.periodDaysElapsed,\n    goalPolicy: base.reportingContract.goalPolicy,\n    accumulationStrategy: base.reportingContract.accumulationStrategy\n  },\n  sources: {\n    goals: { provider: 'Google Sheets', status: 'live', spreadsheetId: base.sheetSpreadsheetId, tab: base.sheetMonthTab },\n    metaAds: { provider: 'Meta Ads', status: 'live', accountId: base.metaAds.accountId },\n    googleAds: { provider: 'Google Ads', status: 'live', customerId: base.googleAds.customerId },\n    hubspot: { provider: 'HubSpot', status: 'manual' },\n    creatives: { provider: 'Meta Ads', status: 'manual_selection' }\n  },\n  summaries: {\n    pekin: {\n      recognition: metricSummary(base.metaAds.campaigns.recognition, 'Interacciones'),\n      investors: metricSummary(base.metaAds.campaigns.investors, 'Leads'),\n      housing: metricSummary(base.metaAds.campaigns.housing, 'Leads'),\n      studio: metricSummary(base.metaAds.campaigns.studio, 'Leads'),\n      pmax: {\n        campaignId: base.googleAds.campaignId,\n        campaignName: base.googleAds.campaignName,\n        unit: 'Conversiones',\n        goalDefined: base.pmax.goalDefined === true,\n        goal: Number(base.pmax.kpi || 0),\n        result: Number(base.pmax.leads || 0),\n        performance: Number(base.pmax.performance || 0),\n        budget: Number(base.pmax.budget || 0),\n        investment: Number(base.pmax.investment || 0),\n        cpa: Number(base.pmax.cpa || 0),\n        impressions: Number(base.googleAds.impressions || 0),\n        interactions: Number(base.googleAds.interactions || 0)\n      },\n      total: { ...base.totals, investment: Number(base.actualInvestment || 0) }\n    },\n    skala: {\n      investment: metricSummary(base.skala.investment, 'Leads'),\n      housing: metricSummary(base.skala.housing, 'Leads'),\n      fair: metricSummary(base.skala.fair, 'Leads'),\n      total: base.skala.summary\n    },\n    metriku: {\n      interaction: metricSummary(base.metriku.interaction, 'Interacciones'),\n      owner: metricSummary(base.metriku.owner, 'Leads'),\n      tenant: metricSummary(base.metriku.tenant, 'Leads'),\n      fair: metricSummary(base.metriku.fair, 'Leads'),\n      total: base.metriku.summary\n    }\n  },\n  series: {\n    pekinHousing: {\n      daily: dailySeries(campaignIds.housing),\n      demographic: demographicSeries(campaignIds.housing),\n      platforms: platformSeries(campaignIds.housing)\n    },\n    pekinInvestors: {\n      daily: dailySeries(campaignIds.investors),\n      demographic: demographicSeries(campaignIds.investors),\n      platforms: platformSeries(campaignIds.investors)\n    },\n    skalaHousing: {\n      daily: dailySeries(campaignIds.skalaHousing),\n      demographic: demographicSeries(campaignIds.skalaHousing),\n      platforms: platformSeries(campaignIds.skalaHousing)\n    },\n    skalaInvestment: {\n      daily: dailySeries(campaignIds.skalaInvestment),\n      demographic: demographicSeries(campaignIds.skalaInvestment),\n      platforms: platformSeries(campaignIds.skalaInvestment)\n    },\n    metrikuInteraction: {\n      daily: dailySeries(campaignIds.metrikuInteraction, 'post_engagement')\n    }\n  }\n};\nreturn [{ json: {\n  ...base,\n  reportDataV1,\n  reportArtifactMode: 'data_and_ai_labels_only',\n  dashboardGeneration: 'external_ai_manual',\n  manualAnalysis: true\n} }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         1920,
+        224
+      ],
+      "id": "c4444444-4444-4444-8444-444444444444",
+      "name": "Preparar Datos del Informe"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $('Preparar Datos del Informe').first().json;\nconst number = (value) => Number(value || 0).toLocaleString('en-US');\nconst money = (value) => '$' + number(Math.round(Number(value || 0)));\nconst pct = (value) => Number.isFinite(Number(value)) ? Number(value).toFixed(2) + '%' : 'N/D';\nconst goalNumber = (metric) => metric?.goalDefined ? number(metric.kpi) : 'Meta no definida';\nconst goalMoney = (metric) => metric?.goalDefined ? money(metric.budget) : 'Meta no definida';\nconst goalPerformance = (metric) => metric?.goalDefined && Number.isFinite(Number(metric.performance)) ? pct(metric.performance) : 'N/D';\nconst generatedLabel = new Intl.DateTimeFormat('es-CO', {\n  timeZone: input.timezone,\n  dateStyle: 'long',\n  timeStyle: 'short'\n}).format(new Date(input.reportDataV1.generatedAt));\nconst replacements = {\n  '{{NOMBRE_PROYECTO_MAYUS}}': input.clientName.toUpperCase(),\n  '{{PERIODO_INFORME}}': input.periodLabel,\n  '{{FECHA_GENERACION}}': generatedLabel,\n  '{{FUENTES_DATOS}}': 'Google Sheets (metas mensuales), Meta Ads y Google Ads · HubSpot y creativos: inserción manual',\n  '{{META_RECONOCIMIENTO_KPI}}': goalNumber(input.recognition), '{{META_RECONOCIMIENTO_REAL}}': number(input.recognition.actual), '{{META_RECONOCIMIENTO_PERFORMANCE}}': goalPerformance(input.recognition), '{{META_RECONOCIMIENTO_PRESUPUESTO}}': goalMoney(input.recognition), '{{META_RECONOCIMIENTO_INVERSION}}': money(input.recognition.investment),\n  '{{META_INVERSIONISTAS_KPI}}': goalNumber(input.investors), '{{META_INVERSIONISTAS_LEADS}}': number(input.investors.leads), '{{META_INVERSIONISTAS_PERFORMANCE}}': goalPerformance(input.investors), '{{META_INVERSIONISTAS_PRESUPUESTO}}': goalMoney(input.investors), '{{META_INVERSIONISTAS_INVERSION}}': money(input.investors.investment), '{{META_INVERSIONISTAS_CPA}}': money(input.investors.cpa),\n  '{{META_VIVIENDA_KPI}}': goalNumber(input.housing), '{{META_VIVIENDA_LEADS}}': number(input.housing.leads), '{{META_VIVIENDA_PERFORMANCE}}': goalPerformance(input.housing), '{{META_VIVIENDA_PRESUPUESTO}}': goalMoney(input.housing), '{{META_VIVIENDA_INVERSION}}': money(input.housing.investment), '{{META_VIVIENDA_CPA}}': money(input.housing.cpa),\n  '{{META_APARTAESTUDIO_INVERSION}}': money(input.studio.investment), '{{META_APARTAESTUDIO_LEADS}}': number(input.studio.leads), '{{META_APARTAESTUDIO_CPA}}': money(input.studio.cpa),\n  '{{GOOGLE_PMAX_KPI}}': goalNumber(input.pmax), '{{GOOGLE_PMAX_LEADS}}': number(input.pmax.leads), '{{GOOGLE_PMAX_PERFORMANCE}}': goalPerformance(input.pmax), '{{GOOGLE_PMAX_PRESUPUESTO}}': goalMoney(input.pmax), '{{GOOGLE_PMAX_INVERSION}}': money(input.pmax.investment),\n  '{{TOTAL_META_LEADS}}': number(input.totals.targetLeads), '{{TOTAL_LEADS_GENERADOS}}': number(input.totals.generatedLeads), '{{TOTAL_PERFORMANCE}}': pct(input.totals.performance), '{{TOTAL_REMANENTE}}': money(input.totals.remainder)\n};\nconst addMetricPlaceholders = (prefix, metric) => Object.assign(replacements, {\n  [`{{${prefix}_KPI}}`]: metric.goalDefined ? number(metric.kpi) : 'Meta no definida',\n  [`{{${prefix}_REAL}}`]: number(metric.actionType === 'post_engagement' ? metric.actual : metric.leads),\n  [`{{${prefix}_PERFORMANCE}}`]: metric.goalDefined ? pct(metric.performance) : 'N/D',\n  [`{{${prefix}_PRESUPUESTO}}`]: metric.goalDefined ? money(metric.budget) : 'Meta no definida',\n  [`{{${prefix}_INVERSION}}`]: money(metric.investment),\n  [`{{${prefix}_CPA}}`]: money(metric.cpa)\n});\naddMetricPlaceholders('SKALA_INVERSION', input.skala.investment);\naddMetricPlaceholders('SKALA_VIVIENDA', input.skala.housing);\naddMetricPlaceholders('SKALA_FERIA', input.skala.fair);\naddMetricPlaceholders('METRIKU_INTERACCION', input.metriku.interaction);\naddMetricPlaceholders('METRIKU_PROPIETARIO', input.metriku.owner);\naddMetricPlaceholders('METRIKU_ARRENDATARIO', input.metriku.tenant);\naddMetricPlaceholders('METRIKU_FERIA', input.metriku.fair);\nObject.assign(replacements, {\n  '{{SKALA_TOTAL_META}}': number(input.skala.summary.targetLeads),\n  '{{SKALA_TOTAL_REAL}}': number(input.skala.summary.generatedLeads),\n  '{{SKALA_TOTAL_PERFORMANCE}}': pct(input.skala.summary.performance),\n  '{{METRIKU_TOTAL_META}}': number(input.metriku.summary.targetLeads),\n  '{{METRIKU_TOTAL_REAL}}': number(input.metriku.summary.generatedLeads),\n  '{{METRIKU_TOTAL_PERFORMANCE}}': pct(input.metriku.summary.performance)\n});\nreturn [{ json: {\n  ...input,\n  replacements,\n  analysisMode: 'external_ai_manual',\n  reportStatus: 'real_data_and_labeled_tables_ready',\n  reportUrl: '<GENERATED_GOOGLE_SLIDES_URL>'\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
         0
       ],
       "id": "b5555555-5555-4555-8555-555555555555",
@@ -168,12 +300,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const source = $('Preparar Placeholders de Slides').first().json;\nconst copy = $input.first().json;\nif (!copy.id) throw new Error('Google Drive no devolvió el ID de la copia.');\nconst requests = Object.entries(source.replacements).map(([placeholder, value]) => ({\n  replaceAllText: {\n    containsText: { text: placeholder, matchCase: true },\n    replaceText: String(value ?? '')\n  }\n}));\nreturn [{ json: { ...source, presentationId: copy.id, copiedFileName: copy.name, batchUpdateBody: { requests } } }];"
+        "jsCode": "const source = $('Preparar Placeholders de Slides').first().json;\nconst copy = $input.first().json;\nif (!copy.id) throw new Error('Google Drive no devolvió el ID de la copia.');\nconst report = source.reportDataV1;\nif (report?.version !== '1.0') throw new Error('Falta el contrato reportDataV1 versión 1.0.');\nconst number = (value) => Number(value || 0).toLocaleString('en-US');\nconst money = (value) => '$' + number(Math.round(Number(value || 0)));\nconst pct = (value) => Number.isFinite(Number(value)) ? Number(value).toFixed(2) + '%' : 'N/D';\nconst goal = (metric) => metric.goalDefined ? number(metric.goal) : 'Meta no definida';\nconst performance = (metric) => metric.goalDefined ? pct(metric.performance) : 'N/D';\nconst requests = Object.entries(source.replacements).map(([placeholder, value]) => ({\n  replaceAllText: { containsText: { text: placeholder, matchCase: true }, replaceText: String(value ?? '') }\n}));\nlet sourceTableCount = 0;\nconst addTable = (objectId, pageObjectId, rows, x, y, w, h, fontSize = 8) => {\n  if (!Array.isArray(rows) || !rows.length || !Array.isArray(rows[0]) || !rows[0].length) throw new Error(`Tabla inválida: ${objectId}`);\n  const columns = rows[0].length;\n  if (rows.some((row) => row.length !== columns)) throw new Error(`Filas irregulares: ${objectId}`);\n  sourceTableCount += 1;\n  requests.push({ createTable: { objectId, rows: rows.length, columns, elementProperties: { pageObjectId, size: { width: { magnitude: w, unit: 'EMU' }, height: { magnitude: h, unit: 'EMU' } }, transform: { scaleX: 1, scaleY: 1, translateX: x, translateY: y, unit: 'EMU' } } } });\n  rows.forEach((row, rowIndex) => row.forEach((value, columnIndex) => {\n    const cellLocation = { rowIndex, columnIndex };\n    requests.push({ insertText: { objectId, cellLocation, insertionIndex: 0, text: String(value ?? '') } });\n    requests.push({ updateTextStyle: { objectId, cellLocation, textRange: { type: 'ALL' }, style: { fontFamily: 'Arial', fontSize: { magnitude: fontSize, unit: 'PT' }, bold: rowIndex === 0, foregroundColor: { opaqueColor: { rgbColor: rowIndex === 0 ? { red: 1, green: 1, blue: 1 } : { red: 0.08, green: 0.08, blue: 0.08 } } } }, fields: 'fontFamily,fontSize,bold,foregroundColor' } });\n  }));\n  requests.push({ updateTableCellProperties: { objectId, tableRange: { location: { rowIndex: 0, columnIndex: 0 }, rowSpan: rows.length, columnSpan: columns }, tableCellProperties: { tableCellBackgroundFill: { solidFill: { color: { rgbColor: { red: 1, green: 1, blue: 1 } }, alpha: 0.96 } } }, fields: 'tableCellBackgroundFill' } });\n  requests.push({ updateTableCellProperties: { objectId, tableRange: { location: { rowIndex: 0, columnIndex: 0 }, rowSpan: 1, columnSpan: columns }, tableCellProperties: { tableCellBackgroundFill: { solidFill: { color: { rgbColor: { red: 0.05, green: 0.55, blue: 0.25 } }, alpha: 1 } } }, fields: 'tableCellBackgroundFill' } });\n};\nconst dailyRows = (rows) => [['Fecha', 'Resultado', 'Inversión', 'Impresiones', 'Alcance'], ...rows.map((row) => [row.date, number(row.result), money(row.investment), number(row.impressions), number(row.reach)])];\nconst demographicRows = (rows) => [['Edad', 'Mujeres', 'Hombres'], ...rows.map((row) => [row.age, number(row.women), number(row.men)])];\nconst platformRows = (rows) => [['Plataforma', 'Resultados'], ...rows.map((row) => [row.name, number(row.result)])];\nconst campaignRows = (items) => [['Campaña', 'Unidad', 'Meta', 'Real', 'Cumpl.', 'Presupuesto', 'Inversión', 'CPA'], ...items.map(([name, metric]) => [name, metric.unit, goal(metric), number(metric.result), performance(metric), metric.goalDefined ? money(metric.budget) : 'Meta no definida', money(metric.investment), money(metric.cpa)])];\nconst dailyFont = (rows) => rows.length > 22 ? 5 : rows.length > 15 ? 6 : 7;\nconst series = report.series;\nconst pekin = report.summaries.pekin;\naddTable('data_pekin_campaigns', 'p4', campaignRows([['Inversionistas', pekin.investors], ['Vivienda', pekin.housing], ['Apartaestudio', pekin.studio]]), 350000, 1300000, 11500000, 3600000, 7);\naddTable('data_pekin_viv_daily', 'p5', dailyRows(series.pekinHousing.daily), 350000, 1150000, 11500000, 3750000, dailyFont(series.pekinHousing.daily));\naddTable('data_pekin_viv_demo', 'p6', demographicRows(series.pekinHousing.demographic), 900000, 1500000, 10400000, 3200000, 10);\naddTable('data_pekin_viv_platform', 'p7', platformRows(series.pekinHousing.platforms), 1500000, 1550000, 9200000, 3000000, 11);\naddTable('data_pekin_inv_daily', 'p9', dailyRows(series.pekinInvestors.daily), 350000, 1150000, 11500000, 3750000, dailyFont(series.pekinInvestors.daily));\naddTable('data_pekin_inv_demo', 'p10', demographicRows(series.pekinInvestors.demographic), 900000, 1500000, 10400000, 3200000, 10);\naddTable('data_pekin_inv_platform', 'p11', platformRows(series.pekinInvestors.platforms), 1500000, 1550000, 9200000, 3000000, 11);\nconst recognition = report.summaries.pekin.recognition;\naddTable('data_recognition_summary', 'p14', [\n  ['Métrica', 'Valor'], ['Meta mensual', goal(recognition)], ['Interacciones', number(recognition.result)], ['Cumplimiento', performance(recognition)], ['Presupuesto', recognition.goalDefined ? money(recognition.budget) : 'Meta no definida'], ['Inversión', money(recognition.investment)], ['Impresiones', number(recognition.impressions)], ['Alcance', number(recognition.reach)]\n], 1800000, 1400000, 8600000, 3300000, 11);\nconst pmax = report.summaries.pekin.pmax;\naddTable('data_pmax_activity', 'p15', [\n  ['Métrica', 'Valor'], ['Campaña', pmax.campaignName], ['Impresiones', number(pmax.impressions)], ['Interacciones', number(pmax.interactions)], ['Conversiones', number(pmax.result)], ['Inversión', money(pmax.investment)], ['CPA', money(pmax.cpa)]\n], 1800000, 1400000, 8600000, 3200000, 11);\naddTable('data_pmax_goal', 'p16', [\n  ['Indicador', 'Valor'], ['Meta mensual', goal(pmax)], ['Resultado real', number(pmax.result)], ['Cumplimiento', performance(pmax)], ['Presupuesto mensual', pmax.goalDefined ? money(pmax.budget) : 'Meta no definida'], ['Inversión real', money(pmax.investment)], ['CPA', money(pmax.cpa)]\n], 1800000, 1400000, 8600000, 3200000, 11);\nconst metriku = report.summaries.metriku;\naddTable('data_metriku_summary', 'p18', campaignRows([['Interacción', metriku.interaction], ['B2C Propietario', metriku.owner], ['B2C Arrendatario', metriku.tenant], ['Feria Gran Salón', metriku.fair]]), 300000, 1050000, 11600000, 1650000, 6);\naddTable('data_metriku_daily', 'p18', dailyRows(series.metrikuInteraction.daily), 300000, 2850000, 11600000, 2450000, dailyFont(series.metrikuInteraction.daily));\nconst skala = report.summaries.skala;\naddTable('data_skala_total', 'p19', [\n  ['Indicador', 'Valor'], ['Meta mensual total', number(skala.total.targetLeads)], ['Resultado total', number(skala.total.generatedLeads)], ['Cumplimiento', pct(skala.total.performance)], ['Presupuesto mensual', money(skala.total.plannedInvestment)], ['Inversión real', money(skala.total.investment)], ['Remanente', money(skala.total.remainder)], ['CPA', money(skala.total.cpa)]\n], 1800000, 1350000, 8600000, 3900000, 11);\naddTable('data_skala_campaigns', 'p20', campaignRows([['Inversión', skala.investment], ['Vivienda', skala.housing], ['Feria', skala.fair]]), 350000, 1300000, 11500000, 3900000, 7);\naddTable('data_skala_viv_daily', 'p21', dailyRows(series.skalaHousing.daily), 350000, 1150000, 11500000, 3750000, dailyFont(series.skalaHousing.daily));\naddTable('data_skala_viv_demo', 'p22', demographicRows(series.skalaHousing.demographic), 900000, 1500000, 10400000, 3200000, 10);\naddTable('data_skala_viv_platform', 'p23', platformRows(series.skalaHousing.platforms), 1500000, 1550000, 9200000, 3000000, 11);\naddTable('data_skala_inv_daily', 'p25', dailyRows(series.skalaInvestment.daily), 350000, 1150000, 11500000, 3750000, dailyFont(series.skalaInvestment.daily));\naddTable('data_skala_inv_demo', 'p26', demographicRows(series.skalaInvestment.demographic), 900000, 1500000, 10400000, 3200000, 10);\naddTable('data_skala_inv_platform', 'p27', platformRows(series.skalaInvestment.platforms), 1500000, 1550000, 9200000, 3000000, 11);\nreturn [{ json: {\n  ...source,\n  presentationId: copy.id,\n  copiedFileName: copy.name,\n  sourceTableCount,\n  dashboardChartCount: 0,\n  batchUpdateRequestCount: requests.length,\n  batchUpdateBody: { requests }\n} }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2016,
+        2880,
         224
       ],
       "id": "b5888888-8888-4888-8888-888888888888",
@@ -242,7 +374,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const prepared = $('Preparar Batch Update').first().json;\nconst slidesResponse = $input.first().json;\nconst reportUrl = `https://docs.google.com/presentation/d/${prepared.presentationId}/edit`;\nreturn [{ json: { ...prepared, slidesResponse, reportStatus: 'slides_ready', reportUrl } }];"
+        "jsCode": "const prepared = $('Preparar Batch Update').first().json;\nconst slidesResponse = $input.first().json;\nconst reportUrl = `https://docs.google.com/presentation/d/${prepared.presentationId}/edit`;\nreturn [{ json: { ...prepared, slidesResponse, reportStatus: 'slides_data_ready_for_external_ai', reportUrl } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -255,7 +387,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst divider = '\\u2501'.repeat(14);\nconst finalMessage = [\n  '\\u2705 *TIC TAC | INFORME COMPLETADO*',\n  divider,\n  `\\u{1F3E2} *Proyecto:* ${input.clientName}`,\n  `\\u{1F4C5} *Periodo acumulado:* ${input.periodLabel}`,\n  '\\u{1F504} *Contrato:* Desde el día 1 hasta este corte',\n  '\\u{1F9E9} *HubSpot:* espacios listos para dashboards manuales',\n  '',\n  `\\u{1F4C1} *Ver informe:* ${input.reportUrl}`,\n  divider,\n  '\\u2139\\uFE0F _Google Ads y Meta Ads: datos reales. HubSpot: inserción manual._',\n  '_Tic Tac Agency Performance SAS_'\n].join('\\n');\nreturn [{ json: { ...input, finalMessage } }];"
+        "jsCode": "const input = $input.first().json;\nconst divider = '\\u2501'.repeat(14);\nconst finalMessage = [\n  '\\u2705 *TIC TAC | INSUMO DE INFORME LISTO*',\n  divider,\n  `\\u{1F3E2} *Proyecto:* ${input.clientName}`,\n  `\\u{1F4C5} *Periodo acumulado:* ${input.periodLabel}`,\n  '\\u{1F504} *Contrato:* Desde el día 1 hasta este corte',\n  '\\u{1F4CA} *Datos y tablas:* Pekín, Skala y Métriku preparados con fuentes reales',\n  '\\u{1F916} *Siguiente paso:* generar dashboards y análisis con una IA externa',\n  '\\u{1F9E9} *HubSpot y creativos:* inserción manual',\n  '',\n  `\\u{1F4C1} *Abrir Slides editable:* ${input.reportUrl}`,\n  divider,\n  '\\u2139\\uFE0F _Google Ads, Meta Ads y metas de Sheets: datos reales. El archivo no incluye dashboards automáticos ni análisis redactados._',\n  '_Tic Tac Agency Performance SAS_'\n].join('\\n');\nreturn [{ json: { ...input, finalMessage } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -337,7 +469,7 @@
         0
       ],
       "parameters": {
-        "jsCode": "const base = $('Incorporar Meta Ads Real').first().json;\nconst campaigns = $input.all().map((item) => item.json);\nconst campaign = campaigns.find((row) => String(row.id) === '23823733646');\nif (!campaign) throw new Error('No se encontró la campaña PMAX de Kinku (23823733646).');\nconst microsToCop = (value) => Number(value || 0) / 1000000;\nconst leads = Number(campaign.conversions || 0);\nconst investment = microsToCop(campaign.costMicros);\nconst dailyBudget = microsToCop(campaign.amountMicros);\nconst periodDaysElapsed = Number(base.periodDaysElapsed || 1);\nconst periodBudget = dailyBudget * periodDaysElapsed;\nconst kpi = Number(base.pmax?.kpi || 30);\nconst performance = kpi > 0 ? Number(((leads / kpi) * 100).toFixed(2)) : 0;\nconst cpa = leads > 0 ? Math.round(investment / leads) : 0;\nreturn [{ json: {\n  ...base,\n  pmax: { ...base.pmax, kpi, leads, performance, budget: Number(periodBudget.toFixed(2)), investment: Number(investment.toFixed(2)), cpa },\n  googleAds: {\n    source: 'live', managerCustomerId: '6584892239', customerId: '9240696515',\n    campaignId: String(campaign.id), campaignName: campaign.name,\n    campaignType: campaign.advertisingChannelType, status: campaign.status,\n    dateRange: 'THIS_MONTH', periodMode: base.periodMode,\n    periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate,\n    periodStart: base.periodStart, periodEnd: base.periodEnd,\n    periodDaysElapsed, dailyBudget: Number(dailyBudget.toFixed(2)),\n    periodBudget: Number(periodBudget.toFixed(2)), impressions: Number(campaign.impressions || 0),\n    interactions: Number(campaign.interactions || 0), conversions: leads,\n    investment: Number(investment.toFixed(2)), cpa,\n    optimizationScore: Number(campaign.optimizationScore || 0)\n  },\n  dataSource: 'mixed',\n  dataSources: { ...base.dataSources, googleAds: 'live', metaAds: 'live', crm: 'mock' }\n} }];"
+        "jsCode": "const base = $('Incorporar Meta Ads Real').first().json;\nconst campaigns = $input.all().map((item) => item.json);\nconst campaign = campaigns.find((row) => String(row.id) === '23823733646');\nif (!campaign) throw new Error('No se encontró la campaña PMAX de Kinku (23823733646).');\nif (!base.pmax?.goalDefined) throw new Error(`Sheets: falta la meta obligatoria de Google PMAX para ${base.sheetMonthTab}.`);\nconst microsToCop = (value) => Number(value || 0) / 1000000;\nconst leads = Number(campaign.conversions || 0);\nconst investment = microsToCop(campaign.costMicros);\nconst dailyBudget = microsToCop(campaign.amountMicros);\nconst periodDaysElapsed = Number(base.periodDaysElapsed || 1);\nconst periodBudget = dailyBudget * periodDaysElapsed;\nconst kpi = Number(base.pmax.kpi);\nconst performance = kpi > 0 ? Number(((leads / kpi) * 100).toFixed(2)) : null;\nconst cpa = leads > 0 ? Math.round(investment / leads) : 0;\nconst pmax = { ...base.pmax, leads, performance, investment: Number(investment.toFixed(2)), cpa };\nconst leadMetrics = [base.investors, base.housing, base.studio, pmax];\nconst targetLeads = leadMetrics.filter((item) => item.goalDefined).reduce((sum, item) => sum + Number(item.kpi || 0), 0);\nconst generatedLeads = leadMetrics.reduce((sum, item) => sum + Number(item.leads || 0), 0);\nconst actualInvestment = [base.recognition, base.investors, base.housing, base.studio, pmax]\n  .reduce((sum, item) => sum + Number(item.investment || 0), 0);\nconst totalPerformance = targetLeads > 0 ? Number(((generatedLeads / targetLeads) * 100).toFixed(2)) : 0;\nconst remainder = Number(base.periodInvestmentGoal || 0) - actualInvestment;\nreturn [{ json: {\n  ...base,\n  pmax,\n  totals: { targetLeads, generatedLeads, performance: totalPerformance, remainder },\n  actualInvestment,\n  googleAds: {\n    source: 'live', managerCustomerId: '6584892239', customerId: '9240696515',\n    campaignId: String(campaign.id), campaignName: campaign.name,\n    campaignType: campaign.advertisingChannelType, status: campaign.status,\n    dateRange: 'THIS_MONTH', periodMode: base.periodMode,\n    periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate,\n    periodStart: base.periodStart, periodEnd: base.periodEnd,\n    periodDaysElapsed, dailyBudget: Number(dailyBudget.toFixed(2)),\n    periodBudget: Number(periodBudget.toFixed(2)), impressions: Number(campaign.impressions || 0),\n    interactions: Number(campaign.interactions || 0), conversions: leads,\n    investment: Number(investment.toFixed(2)), cpa,\n    optimizationScore: Number(campaign.optimizationScore || 0)\n  },\n  dataSource: 'mixed',\n  dataSources: { ...base.dataSources, sheets: 'live', googleAds: 'live', metaAds: 'live', crm: 'manual' }\n} }];"
       }
     },
     {
@@ -428,7 +560,7 @@
         224
       ],
       "parameters": {
-        "jsCode": "const base = $('Recolectar Datos Simulados').first().json;\nconst insights = $('Consultar Insights Meta Kinku').first().json.data || [];\nconst budgets = $input.first().json.data || [];\nconst ids = {\n  recognition: '120249557003280774',\n  investors: '120238954925180774',\n  housing: '120238960041500774',\n  studio: '120247687053780774'\n};\nconst byId = (rows, id) => rows.find((row) => String(row.campaign_id || row.id) === id);\nconst actionValue = (row, type) => Number((row.actions || []).find((action) => action.action_type === type)?.value || 0);\nconst metric = (key, actionType, withKpi = true) => {\n  const insight = byId(insights, ids[key]);\n  const campaign = byId(budgets, ids[key]);\n  if (!insight) throw new Error(`Meta Ads no devolvió insights para ${key} (${ids[key]}).`);\n  if (!campaign) throw new Error(`Meta Ads no devolvió presupuesto para ${key} (${ids[key]}).`);\n  const actual = actionValue(insight, actionType);\n  const investment = Number(insight.spend || 0);\n  const dailyBudget = Number(campaign.daily_budget || 0);\n  const budget = dailyBudget * Number(base.periodDaysElapsed || 1);\n  const kpi = withKpi ? Number(base[key]?.kpi || 0) : null;\n  return {\n    campaignId: ids[key], campaignName: insight.campaign_name, objective: insight.objective,\n    status: campaign.effective_status || campaign.status, actionType,\n    periodStartDate: insight.date_start, periodEndDate: insight.date_stop,\n    impressions: Number(insight.impressions || 0), reach: Number(insight.reach || 0),\n    actual, leads: actionType === 'lead' ? actual : undefined,\n    kpi, performance: kpi > 0 ? Number(((actual / kpi) * 100).toFixed(2)) : undefined,\n    dailyBudget, budget, investment, cpa: actionType === 'lead' && actual > 0 ? Math.round(investment / actual) : undefined\n  };\n};\nconst recognitionLive = metric('recognition', 'post_engagement');\nconst investorsLive = metric('investors', 'lead');\nconst housingLive = metric('housing', 'lead');\nconst studioLive = metric('studio', 'lead', false);\nconst metaLeads = investorsLive.leads + housingLive.leads + studioLive.leads;\nconst metaInvestment = investorsLive.investment + housingLive.investment + studioLive.investment;\nreturn [{ json: {\n  ...base,\n  recognition: { ...base.recognition, actual: recognitionLive.actual, performance: recognitionLive.performance, budget: recognitionLive.budget, investment: recognitionLive.investment },\n  investors: { ...base.investors, leads: investorsLive.leads, performance: investorsLive.performance, budget: investorsLive.budget, investment: investorsLive.investment, cpa: investorsLive.cpa },\n  housing: { ...base.housing, leads: housingLive.leads, performance: housingLive.performance, budget: housingLive.budget, investment: housingLive.investment, cpa: housingLive.cpa },\n  studio: { ...base.studio, leads: studioLive.leads, budget: studioLive.budget, investment: studioLive.investment, cpa: studioLive.cpa },\n  metaAds: { source: 'live', accountId: 'act_302924541795503', currency: 'COP', timezone: 'America/Bogota', periodMode: base.periodMode, periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate, totalLeads: metaLeads, leadCampaignInvestment: metaInvestment, campaigns: { recognition: recognitionLive, investors: investorsLive, housing: housingLive, studio: studioLive } },\n  dataSource: 'mixed',\n  dataSources: { googleAds: 'mock', metaAds: 'live', crm: 'mock' }\n} }];"
+        "jsCode": "const base = $('Recolectar Datos Simulados').first().json;\nconst insights = $('Consultar Insights Meta Kinku').first().json.data || [];\nconst campaigns = $input.first().json.data || [];\nconst ids = {\n  recognition: '120249557003280774', investors: '120238954925180774', housing: '120238960041500774', studio: '120247687053780774',\n  skalaInvestment: '120248650813200774', skalaHousing: '120248651700020774', skalaFair: '120249270128040774',\n  metrikuInteraction: '120242733279060774', metrikuOwner: '120239390318710774', metrikuTenant: '120240163370610774', metrikuFair: '120249402815640774'\n};\nconst byId = (rows, id) => rows.find((row) => String(row.campaign_id || row.id) === id);\nconst actionValue = (row, type) => Number((row?.actions || []).find((action) => action.action_type === type)?.value || 0);\nconst metric = (id, actionType, goal, label, allowNoDelivery = false) => {\n  const insight = byId(insights, id);\n  const campaign = byId(campaigns, id);\n  if (!campaign) throw new Error(`Meta Ads no devolvió la campaña ${label} (${id}).`);\n  if (!insight && !allowNoDelivery) throw new Error(`Meta Ads no devolvió insights para ${label} (${id}).`);\n  const actual = actionValue(insight, actionType);\n  const investment = Number(insight?.spend || 0);\n  const goalDefined = goal?.goalDefined === true;\n  const kpi = goalDefined ? Number(goal.kpi) : null;\n  return {\n    campaignId: id, campaignName: insight?.campaign_name || campaign.name, objective: insight?.objective || campaign.objective, status: campaign.effective_status || campaign.status,\n    actionType, goalDefined, kpi, budget: goalDefined ? Number(goal.budget || 0) : null, costPerResultGoal: goalDefined ? Number(goal.costPerResultGoal || 0) : null,\n    periodStartDate: insight?.date_start || base.periodStartDate, periodEndDate: insight?.date_stop || base.periodEndDate,\n    impressions: Number(insight?.impressions || 0), reach: Number(insight?.reach || 0), actual, leads: actionType === 'lead' ? actual : undefined,\n    performance: goalDefined && kpi > 0 ? Number(((actual / kpi) * 100).toFixed(2)) : null, investment,\n    cpa: actionType === 'lead' && actual > 0 ? Math.round(investment / actual) : 0,\n    reactions: actionValue(insight, 'post_reaction'), comments: actionValue(insight, 'comment'), shares: actionValue(insight, 'post'), saves: actionValue(insight, 'onsite_conversion.post_save') || actionValue(insight, 'post_save')\n  };\n};\nconst recognitionLive = metric(ids.recognition, 'post_engagement', base.recognition, 'Reconocimiento Pekín');\nconst investorsLive = metric(ids.investors, 'lead', base.investors, 'Inversión Pekín');\nconst housingLive = metric(ids.housing, 'lead', base.housing, 'Vivienda Pekín');\nconst studioLive = metric(ids.studio, 'lead', base.studio, 'Apartaestudios Pekín');\nconst skala = {\n  investment: metric(ids.skalaInvestment, 'lead', base.skalaGoals.investment, 'Inversión Skala'),\n  housing: metric(ids.skalaHousing, 'lead', base.skalaGoals.housing, 'Vivienda Skala'),\n  fair: metric(ids.skalaFair, 'lead', base.skalaGoals.fair, 'Feria Skala')\n};\nconst metriku = {\n  interaction: metric(ids.metrikuInteraction, 'post_engagement', base.metrikuGoals.interaction, 'Interacción Métriku', true),\n  owner: metric(ids.metrikuOwner, 'lead', base.metrikuGoals.owner, 'B2C Propietario Métriku', true),\n  tenant: metric(ids.metrikuTenant, 'lead', base.metrikuGoals.tenant, 'B2C Arrendatario Métriku', true),\n  fair: metric(ids.metrikuFair, 'lead', base.metrikuGoals.fair, 'Feria Gran Salón Métriku', true)\n};\nconst summarizeLeads = (items, plannedInvestment) => {\n  const targetLeads = items.filter((item) => item.goalDefined).reduce((sum, item) => sum + Number(item.kpi || 0), 0);\n  const generatedLeads = items.reduce((sum, item) => sum + Number(item.leads || 0), 0);\n  const investment = items.reduce((sum, item) => sum + Number(item.investment || 0), 0);\n  return { targetLeads, generatedLeads, performance: targetLeads > 0 ? Number(((generatedLeads / targetLeads) * 100).toFixed(2)) : null, plannedInvestment, investment, remainder: plannedInvestment - investment, cpa: generatedLeads > 0 ? Math.round(investment / generatedLeads) : 0 };\n};\nconst skalaSummary = summarizeLeads(Object.values(skala), Object.values(base.skalaGoals).reduce((sum, item) => sum + Number(item.budget || 0), 0));\nconst metrikuLeadItems = [metriku.owner, metriku.tenant, metriku.fair];\nconst metrikuPlannedInvestment = Object.values(base.metrikuGoals).reduce((sum, item) => sum + Number(item.budget || 0), 0);\nconst metrikuSummary = { ...summarizeLeads(metrikuLeadItems, metrikuPlannedInvestment), totalInvestmentIncludingInteraction: metrikuPlannedInvestment, actualInvestmentIncludingInteraction: Object.values(metriku).reduce((sum, item) => sum + Number(item.investment || 0), 0) };\nconst metaLeads = investorsLive.leads + housingLive.leads + studioLive.leads;\nconst metaInvestment = investorsLive.investment + housingLive.investment + studioLive.investment;\nreturn [{ json: {\n  ...base,\n  recognition: { ...base.recognition, actual: recognitionLive.actual, performance: recognitionLive.performance, investment: recognitionLive.investment },\n  investors: { ...base.investors, leads: investorsLive.leads, performance: investorsLive.performance, investment: investorsLive.investment, cpa: investorsLive.cpa },\n  housing: { ...base.housing, leads: housingLive.leads, performance: housingLive.performance, investment: housingLive.investment, cpa: housingLive.cpa },\n  studio: { ...base.studio, leads: studioLive.leads, performance: studioLive.performance, investment: studioLive.investment, cpa: studioLive.cpa },\n  skala: { ...skala, summary: skalaSummary }, metriku: { ...metriku, summary: metrikuSummary },\n  metaAds: { source: 'live', accountId: 'act_302924541795503', currency: 'COP', timezone: 'America/Bogota', periodMode: base.periodMode, periodStartDate: base.periodStartDate, periodEndDate: base.periodEndDate, totalLeads: metaLeads, leadCampaignInvestment: metaInvestment, campaigns: { recognition: recognitionLive, investors: investorsLive, housing: housingLive, studio: studioLive, skala, metriku } },\n  dataSource: 'mixed', dataSources: { ...base.dataSources, sheets: 'live', googleAds: 'mock', metaAds: 'live', crm: 'manual' }\n} }];"
       }
     }
   ],
@@ -445,6 +577,28 @@
       ]
     },
     "Cargar Configuración Temporal": {
+      "main": [
+        [
+          {
+            "node": "Leer Metas Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Metas Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Aplicar Metas Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aplicar Metas Google Sheets": {
       "main": [
         [
           {
@@ -466,33 +620,88 @@
         ]
       ]
     },
-    "Preparar Solicitud Gemini": {
+    "Consultar Insights Meta Kinku": {
       "main": [
         [
           {
-            "node": "Generar Analisis con Gemini",
+            "node": "Consultar Presupuestos Meta Kinku",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Generar Analisis con Gemini": {
+    "Consultar Presupuestos Meta Kinku": {
       "main": [
         [
           {
-            "node": "Validar Analisis Gemini",
+            "node": "Incorporar Meta Ads Real",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Validar Analisis Gemini": {
+    "Incorporar Meta Ads Real": {
       "main": [
         [
           {
-            "node": "Preparar Placeholders de Slides",
+            "node": "Consultar Google Ads Kinku",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Google Ads Kinku": {
+      "main": [
+        [
+          {
+            "node": "Incorporar Google Ads Real",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Incorporar Google Ads Real": {
+      "main": [
+        [
+          {
+            "node": "Consultar Tendencia Meta Kinku",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Tendencia Meta Kinku": {
+      "main": [
+        [
+          {
+            "node": "Consultar Demografia Meta Kinku",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Demografia Meta Kinku": {
+      "main": [
+        [
+          {
+            "node": "Consultar Plataformas Meta Kinku",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Plataformas Meta Kinku": {
+      "main": [
+        [
+          {
+            "node": "Preparar Datos del Informe",
             "type": "main",
             "index": 0
           }
@@ -576,55 +785,11 @@
         ]
       ]
     },
-    "Consultar Google Ads Kinku": {
+    "Preparar Datos del Informe": {
       "main": [
         [
           {
-            "node": "Incorporar Google Ads Real",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Incorporar Google Ads Real": {
-      "main": [
-        [
-          {
-            "node": "Preparar Solicitud Gemini",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Consultar Insights Meta Kinku": {
-      "main": [
-        [
-          {
-            "node": "Consultar Presupuestos Meta Kinku",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Consultar Presupuestos Meta Kinku": {
-      "main": [
-        [
-          {
-            "node": "Incorporar Meta Ads Real",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Incorporar Meta Ads Real": {
-      "main": [
-        [
-          {
-            "node": "Consultar Google Ads Kinku",
+            "node": "Preparar Placeholders de Slides",
             "type": "main",
             "index": 0
           }
@@ -635,8 +800,7 @@
   "pinData": {},
   "active": false,
   "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate"
+    "executionOrder": "v1"
   },
   "versionId": "b7777777-7777-4777-8777-777777777777",
   "meta": {

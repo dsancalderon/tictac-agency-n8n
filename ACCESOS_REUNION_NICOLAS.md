@@ -58,7 +58,8 @@ Decisión vigente del 12 de agosto de 2026:
 - [x] Permiso `ads_read`.
 - [x] Permiso para consultar insights y campañas.
 - [x] Campañas de Proyecto Pekín confirmadas por ID.
-- [x] Campañas de Skala identificadas y aprobadas para la futura integración.
+- [x] Campañas de Skala identificadas e integradas dinámicamente.
+- [x] Campañas de Métriku identificadas e integradas dinámicamente.
 
 ### Definiciones
 
@@ -71,9 +72,13 @@ Decisión vigente del 12 de agosto de 2026:
 - [x] Skala Inversión: `120248650813200774`.
 - [x] Skala Vivienda: `120248651700020774`.
 - [x] Skala Feria Gran Salón: `120249270128040774`.
-- [x] Primero se conectará Sheets; luego las metas y presupuestos de Skala se
-  tomarán de la hoja.
-- [ ] Desgloses requeridos: fecha, edad, género, plataforma y ubicación.
+- [x] Metas y presupuestos de Skala se toman de la hoja mensual.
+- [x] Métriku Interacción: `120242733279060774`.
+- [x] Métriku B2C Propietario: `120239390318710774`.
+- [x] Métriku B2C Arrendatario: `120240163370610774`.
+- [x] Métriku Feria Gran Salón: `120249402815640774`.
+- [x] Desgloses implementados para fecha, edad, género y plataforma en las
+  campañas con dashboards; ubicación queda fuera del alcance actual.
 
 ## 3. Google Ads
 
@@ -95,22 +100,21 @@ Decisión vigente del 12 de agosto de 2026:
 
 ## 4. Google Sheets y archivos operativos
 
-- [ ] Enlace de la hoja de metas.
-- [ ] Compartir la hoja con permiso de lectura al usuario OAuth de n8n.
-- [ ] Nombre de cada pestaña relevante.
-- [ ] Columnas que contienen cliente, periodo, meta e inversión.
+- [x] Enlace nativo de la hoja de metas.
+- [x] Acceso de lectura validado con el usuario OAuth de n8n.
+- [x] Pestañas `GENERAL`, `ENERO` a `AGOSTO` identificadas.
+- [x] Columnas de fecha, medio, objetivo, campaña, KPI, costo por resultado e inversión identificadas.
 - [ ] Enlace de la carpeta de destino de informes.
 - [ ] Permiso de edición sobre la carpeta de destino.
 - [ ] Correo de las personas que deben poder abrir los informes.
 - [ ] Ejemplos de capturas o gráficos que se actualizan en cada corte acumulado.
 
-## 5. IA estratégica
+## 5. Análisis manual
 
-- [x] Gemini definido.
-- [x] API key guardada en la credencial cifrada `Gemini API - Tic Tac`.
-- [ ] Cuenta responsable de consumo y facturación.
-- [x] Modelo autorizado: `gemini-3.5-flash`.
-- [ ] Límite mensual de uso.
+- [x] Gemini retirado del workflow para no depender de facturación ni cuota.
+- [x] Los campos manuales muestran una etiqueta con fuente y campaña.
+- [x] La automatización local genera datos, tablas y etiquetas para una IA
+  externa; no crea dashboards ni análisis dentro de n8n.
 - [ ] Ejemplos de redacción aprobada por Nicolás.
 - [ ] Palabras, afirmaciones o recomendaciones que deben evitarse.
 

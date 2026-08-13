@@ -1,89 +1,132 @@
-# Google Slides — prueba de placeholders
+# Google Slides — plantilla de datos y etiquetas para IA
 
 ## Presentaciones
 
-- Plantilla nativa: `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`
-- Prueba 01 con datos simulados: `1tf8MWou9DzbaRKID0H-F1BjGRHlnV85LNYp2XX02KHE`
-- Respaldo anterior a placeholders: `1eZH0jKXCilcyjb1MzCMyq20OcJWZUJ3Dtb3wGs0RBLI`
-- Respaldo anterior a retirar gráficas históricas de Meta: `1p91OxRg2AAJ6o0abMbmMITiwlI9o0SbMY0nv49CIOl4`
-- Informe definitivo con Google Ads y Meta Ads reales: `1aVOc9xQ2VpHdTwqH5SWO62AvP6vk5_M3-OxP0lZgDbs`
+- Plantilla productiva anterior y rollback:
+  `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`.
+- Nueva plantilla privada de 29 diapositivas:
+  `1cPlo9OeUWpfW7H1ACnbwpT59MSR_yruErFkVhc7jHOo`.
+- Informe privado validado el 13 de agosto de 2026:
+  `1GAnmA_kJ0ebIlzOt3L3CcE_wx1OrFfqKsGgjScSxYuo`.
 
-## Alcance de la prueba
+La plantilla productiva anterior permanece intacta como rollback. El generador
+productivo fue actualizado el 13 de agosto de 2026 para usar la nueva plantilla.
+La prueba final con permiso de lector y WhatsApp queda pendiente de confirmar el
+destinatario exacto.
 
-- Diapositiva 3: tabla general de rendimiento.
-- Diapositiva 4: inversión, leads y CPA de Vivienda, Inversionistas y Apartaestudio.
-- Diapositiva 17: espacios manuales para los dos dashboards de HubSpot.
+## Contrato del informe
 
-## Placeholders
+El Slides generado contiene únicamente:
+
+- métricas reales y metas mensuales;
+- tablas fuente visibles;
+- etiquetas que indican a una IA posterior qué dashboard y análisis producir;
+- zonas manuales para HubSpot y creativos.
+
+No contiene dashboards automáticos, análisis redactados, cifras históricas,
+consultas de creativos ni datos simulados de HubSpot.
+
+Cada página analítica incluye una tabla y estas dos etiquetas:
+
+- `DASHBOARD A GENERAR · FUENTE · CAMPAÑA/PROYECTO · TIPO · PERIODO`;
+- `ANÁLISIS A GENERAR · FUENTE · CAMPAÑA/PROYECTO · CRITERIOS · PERIODO`.
+
+## Distribución de las 29 diapositivas
+
+- 1–2: portada, identidad, periodo, fecha de generación y fuentes.
+- 3–4: resumen general y comparativo por campaña de Pekín.
+- 5–7: Pekín Vivienda — diario, edad/género y plataforma.
+- 8: creativos de Pekín Vivienda, inserción manual.
+- 9–11: Pekín Inversionistas — diario, edad/género y plataforma.
+- 12–13: creativos y campaña nueva, inserción manual.
+- 14: reconocimiento/reproducción de video.
+- 15–16: Google PMAX — actividad y meta frente a resultado.
+- 17: dos zonas manuales de HubSpot.
+- 18: resumen de Métriku y diario de Interacción.
+- 19–20: resumen y comparativo por campaña de Skala.
+- 21–23: Skala Vivienda — diario, edad/género y plataforma.
+- 24: creativos de Skala Vivienda, inserción manual.
+- 25–27: Skala Inversión — diario, edad/género y plataforma.
+- 28: creativos de Skala Inversión, inserción manual.
+- 29: cierre.
+
+## Placeholders escalares
 
 ### Generales
 
 - `{{NOMBRE_PROYECTO_MAYUS}}`
+- `{{PERIODO_INFORME}}`
+- `{{FECHA_GENERACION}}`
+- `{{FUENTES_DATOS}}`
 
-### Reconocimiento
+### Pekín
 
-- `{{META_RECONOCIMIENTO_KPI}}`
-- `{{META_RECONOCIMIENTO_REAL}}`
-- `{{META_RECONOCIMIENTO_PERFORMANCE}}`
-- `{{META_RECONOCIMIENTO_PRESUPUESTO}}`
-- `{{META_RECONOCIMIENTO_INVERSION}}`
+Se conservan los placeholders `META_RECONOCIMIENTO_*`,
+`META_INVERSIONISTAS_*`, `META_VIVIENDA_*`,
+`META_APARTAESTUDIO_*`, `GOOGLE_PMAX_*` y `TOTAL_*`.
 
-### Inversionistas
+### Skala y Métriku
 
-- `{{META_INVERSIONISTAS_KPI}}`
-- `{{META_INVERSIONISTAS_LEADS}}`
-- `{{META_INVERSIONISTAS_PERFORMANCE}}`
-- `{{META_INVERSIONISTAS_PRESUPUESTO}}`
-- `{{META_INVERSIONISTAS_INVERSION}}`
-- `{{META_INVERSIONISTAS_CPA}}`
+El workflow admite los prefijos:
 
-### Vivienda
+- `SKALA_INVERSION_*`, `SKALA_VIVIENDA_*`, `SKALA_FERIA_*`;
+- `METRIKU_INTERACCION_*`, `METRIKU_PROPIETARIO_*`,
+  `METRIKU_ARRENDATARIO_*`, `METRIKU_FERIA_*`;
+- `SKALA_TOTAL_*` y `METRIKU_TOTAL_*`.
 
-- `{{META_VIVIENDA_KPI}}`
-- `{{META_VIVIENDA_LEADS}}`
-- `{{META_VIVIENDA_PERFORMANCE}}`
-- `{{META_VIVIENDA_PRESUPUESTO}}`
-- `{{META_VIVIENDA_INVERSION}}`
-- `{{META_VIVIENDA_CPA}}`
+Para una campaña, los sufijos disponibles son `KPI`, `REAL`,
+`PERFORMANCE`, `PRESUPUESTO`, `INVERSION` y `CPA`.
 
-### Apartaestudio
+## Tablas fuente
 
-- `{{META_APARTAESTUDIO_INVERSION}}`
-- `{{META_APARTAESTUDIO_LEADS}}`
-- `{{META_APARTAESTUDIO_CPA}}`
+`Preparar Batch Update` crea 20 tablas con IDs estables, además de completar
+la tabla preexistente de la diapositiva 3:
 
-### Google PMAX
+- Pekín: `data_pekin_campaigns`, seis tablas de Vivienda/Inversionistas,
+  `data_recognition_summary`, `data_pmax_activity` y `data_pmax_goal`.
+- Métriku: `data_metriku_summary` y `data_metriku_daily`.
+- Skala: `data_skala_total`, `data_skala_campaigns` y seis tablas de
+  Vivienda/Inversión.
 
-- `{{GOOGLE_PMAX_KPI}}`
-- `{{GOOGLE_PMAX_LEADS}}`
-- `{{GOOGLE_PMAX_PERFORMANCE}}`
-- `{{GOOGLE_PMAX_PRESUPUESTO}}`
-- `{{GOOGLE_PMAX_INVERSION}}`
+Las series diarias contienen fecha, resultado, inversión, impresiones y alcance.
+Las series demográficas contienen edad, mujeres y hombres. Las series de
+plataforma contienen plataforma y resultado.
 
-### Totales
+## HubSpot y creativos
 
-- `{{TOTAL_META_LEADS}}`
-- `{{TOTAL_LEADS_GENERADOS}}`
-- `{{TOTAL_PERFORMANCE}}`
-- `{{TOTAL_REMANENTE}}`
-
-### HubSpot
-
-La diapositiva 17 no contiene placeholders automáticos. Conserva únicamente el
-título `DASHBOARDS HUBSPOT` y el área libre para insertar manualmente:
+La diapositiva 17 conserva dos zonas manuales sin cifras automáticas:
 
 1. etapa del ciclo de vida;
 2. estado del contacto.
 
-La plantilla previa al cambio quedó respaldada en
-`1SsbJ5Ol7d5raGRL4VR0tjNx72NwCV3RE3UMVqCTB1qQ`.
+Las diapositivas 8, 12, 13, 24 y 28 quedan identificadas como zonas de inserción
+manual. No se inventan datos a nivel de anuncio.
 
-## Validación
+## Validación privada
 
-- La plantilla conserva los placeholders automáticos de Ads y textos
-  estratégicos; HubSpot se completa manualmente.
-- La copia de prueba contiene cero placeholders pendientes.
-- Las diapositivas 3, 4, 5, 6, 15, 16 y 17 se revisaron visualmente sin desbordamientos.
-- Las gráficas históricas de julio se retiraron de las diapositivas 5 y 6; los análisis permanecen dinámicos.
-- El generador activo contiene 34 solicitudes de reemplazo. Las seis solicitudes
-  CRM simuladas se retiraron al dejar la diapositiva 17 para inserción manual.
+La ejecución aislada `2744`:
+
+- finalizó en `Reemplazar Placeholders en Slides`;
+- no incluyó nodos de permisos, notificación ni WhatsApp;
+- creó 20 tablas mediante 1.141 solicitudes de Slides;
+- registró `dashboardChartCount = 0`;
+- mantuvo `MONTH_TO_DATE`, `America/Bogota` y
+  `MONTHLY_FULL_TARGET`;
+- validó Skala en 150 = 70 + 50 + 30;
+- dejó cero placeholders `{{...}}` y cero `sheetsChart`;
+- concilió 129 filas y seis métricas escalares con `reportDataV1`;
+- se revisó visualmente en las 29 miniaturas sin recortes ni solapamientos.
+
+El informe continúa privado, con el propietario como único permiso. Los
+workflows temporales usados para la prueba fueron desactivados y eliminados.
+
+## Aceptación productiva
+
+La ejecución productiva `2746` completó los 22 nodos hasta WhatsApp:
+
+- informe: `1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk`;
+- permiso: `anyoneWithLink`, tipo `anyone`, rol `reader`, sin descubrimiento;
+- WhatsApp: `6a7d73a4e3c0d81f9b263c81`, estado `accepted`;
+- 20 tablas nuevas, 1.141 solicitudes y cero dashboards automáticos;
+- 29 diapositivas auditadas por API y revisadas visualmente;
+- cero placeholders residuales y meta Skala 150.

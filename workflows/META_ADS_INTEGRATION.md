@@ -3,8 +3,10 @@
 ## Alcance
 
 Esta integración incorpora métricas reales acumuladas del mes desde Meta Ads al
-generador `xK8GPmsUphKV2B2Q`. Google Ads también es real; HubSpot se completa
-manualmente y las metas continúan temporales hasta conectar Google Sheets.
+generador `xK8GPmsUphKV2B2Q`. El JSON local prepara tablas fuente de tendencia,
+demografía y plataforma para Pekín y Skala, además del bloque real de Métriku.
+Google Ads es real; HubSpot se completa manualmente y las metas mensuales de
+Proyecto Pekín, Skala y Métriku se leen de Google Sheets.
 
 ## Recursos de producción
 
@@ -14,7 +16,7 @@ manualmente y las metas continúan temporales hasta conectar Google Sheets.
 | Cuenta publicitaria | `act_302924541795503` |
 | Credencial cifrada de n8n | `Meta Ads - Kinku` |
 | Workflow generador | `xK8GPmsUphKV2B2Q` |
-| Versión publicada | `ab1880ec-ba4b-4ca6-bdd9-3a97a6ad0f0d` |
+| Versión publicada | `9cfffeb3-0e24-443c-8e51-344bb1efe2a7` |
 
 El token de usuario del sistema no se almacena en Git ni en el JSON del
 workflow. La credencial usa `Authorization: Bearer ...` dentro del almacén
@@ -28,6 +30,13 @@ cifrado de n8n y tiene permisos de lectura.
 | Inversionistas | KINKU - PEKÍN - INVERSIONISTAS | `120238954925180774` | `lead` |
 | Vivienda | KINKU - PEKÍN - VIVIENDA FAMILIAR | `120238960041500774` | `lead` |
 | Apartaestudios | KINKU - PEKÍN - APARTAESTUDIOS | `120247687053780774` | `lead` |
+| Skala Inversión | Campaña de Inversión | `120248650813200774` | `lead` |
+| Skala Vivienda | Campaña de Vivienda | `120248651700020774` | `lead` |
+| Skala Feria | Feria Gran Salón | `120249270128040774` | `lead` |
+| Métriku Interacción | Interacción / Video Sofi y Fera | `120242733279060774` | `post_engagement` |
+| Métriku Propietario | B2C Propietario | `120239390318710774` | `lead` |
+| Métriku Arrendatario | B2C Arrendatario | `120240163370610774` | `lead` |
+| Métriku Feria | Feria Gran Salón | `120249402815640774` | `lead` |
 
 La API confirmó moneda `COP` y zona horaria `America/Bogota`.
 
@@ -73,25 +82,36 @@ calculado puede ser inferior o superior al gasto real. Esto se observó en
 Reconocimiento: el presupuesto vigente fue COP 3.400 diarios, mientras el gasto
 acumulado reflejaba una configuración histórica mayor.
 
-## Proyecto Skala: pendiente de integración dinámica
+## Proyecto Skala y Métriku: integración dinámica activa
 
-La plantilla contiene una sección de Skala en las diapositivas 19 a 28, pero
-actualmente sus cifras y textos son estáticos; el generador productivo no los
-reemplaza. La ejecución `2720` confirmó tres campañas activas con datos reales
-acumulados del 1 al 12 de agosto de 2026:
+Desde el 13 de agosto de 2026, la sección de Skala reemplaza las cifras, textos
+e imágenes históricas de la plantilla por datos acumulados del mes. La prueba
+privada del 1 al 13 de agosto observó:
 
 | Campaña | ID | Leads | Inversión |
 | --- | --- | ---: | ---: |
-| Inversión Skala | `120248650813200774` | 42 | COP 226.432 |
-| Vivienda Skala | `120248651700020774` | 30 | COP 164.115 |
-| Feria Gran Salón Skala | `120249270128040774` | 174 | COP 329.456 |
+| Inversión Skala | `120248650813200774` | 42 | COP 241.572 |
+| Vivienda Skala | `120248651700020774` | 31 | COP 173.777 |
+| Feria Gran Salón Skala | `120249270128040774` | 185 | COP 353.429 |
 
-Estos números son evidencia de la ejecución, no constantes. El usuario confirmó
-que el informe debe incluir Inversión, Vivienda y Feria Gran Salón. Primero se
-conectará Google Sheets y después las metas/presupuestos de Skala se leerán desde
-la hoja. Los valores estáticos de 90/COP 900.000 y 60/COP 600.000 son únicamente
-temporales. No declarar la sección Skala como real hasta reemplazar también sus
-textos e imágenes históricas y validar visualmente el informe final.
+Estos números son evidencia de la ejecución, no constantes. Sheets define metas
+de 70, 50 y 30 leads respectivamente y la fila total vigente declara 150. El
+generador concilia ambas cifras y detiene el informe si vuelven a diferir.
+
+Métriku también es dinámico. Interacción y B2C Propietario estaban activos pero
+sin entrega en el corte y se publicaron con resultado e inversión cero; B2C
+Arrendatario registró 18 leads y COP 37.201. Feria Gran Salón registró 7 leads y
+COP 66.714, pero como la hoja no define una meta para esa campaña muestra
+`Meta no definida` y cumplimiento `N/D`.
+
+La presentación privada vigente es
+`1GAnmA_kJ0ebIlzOt3L3CcE_wx1OrFfqKsGgjScSxYuo`; contiene tablas y etiquetas,
+no recibió permiso público y no se envió por WhatsApp.
+
+La aceptación productiva `2746` generó
+`1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk`, con permiso de lector y
+WhatsApp `6a7d73a4e3c0d81f9b263c81` aceptado. Las 29 diapositivas fueron
+revisadas visualmente y no contienen dashboards automáticos.
 
 ## Aceptación de producción del 12 de agosto de 2026
 

@@ -22,17 +22,18 @@ Los IDs internos de workflows los asigna cada instancia de n8n al importarlos, p
 
 ## Estado de las integraciones
 
-El generador combina fuentes reales con configuración temporal. Cada salida conserva el campo
+El generador combina fuentes reales con metas mensuales de Google Sheets. Cada salida conserva el campo
 `dataSources` para que el informe identifique el origen de los datos:
 
 | Flujo o nodo | Estado |
 | --- | --- |
-| Cargar Configuración Temporal | Google Sheets / tabla maestra |
-| Recolectar Datos Simulados | Conserva configuración temporal; las métricas CRM simuladas ya no se publican en Slides ni WhatsApp |
-| Consultar Insights Meta Kinku → Consultar Presupuestos Meta Kinku → Incorporar Meta Ads Real | Producción: Meta Ads real para Reconocimiento, Inversionistas, Vivienda y Apartaestudios |
+| Cargar Configuración Temporal → Leer Metas Google Sheets → Aplicar Metas Google Sheets | Producción: selecciona la pestaña del mes y carga las metas mensuales completas de Proyecto Pekín, Skala y Métriku |
+| Recolectar Datos Simulados | Conserva el contrato entre nodos; las métricas CRM simuladas ya no se publican en Slides ni WhatsApp |
+| Consultar Insights Meta Kinku → Consultar Presupuestos Meta Kinku → Incorporar Meta Ads Real | Producción: Meta Ads real para Kinku, Skala y Métriku, incluyendo campañas sin entrega en el corte |
 | Consultar Google Ads Kinku → Incorporar Google Ads Real | Producción: Google Ads real para la PMAX de Kinku |
-| Preparar Solicitud Gemini → Generar Analisis con Gemini → Validar Analisis Gemini | Configurado con Gemini 3.5 Flash, salida JSON validada y hasta 3 intentos ante fallos temporales |
-| Copiar y completar Google Slides | Configurado con la credencial `Google Drive account`; usa el conjunto mixto de datos |
+| Consultar Tendencia/Demografia/Plataformas Meta → Preparar Datos del Informe | Contrato local validado: construye `reportDataV1` con resúmenes y series fuente de Pekín, Skala y Métriku |
+| Preparar Datos del Informe → Preparar Batch Update | Contrato local validado: reemplaza escalares, crea tablas visibles y escribe etiquetas para una IA posterior; no crea gráficos |
+| Copiar y completar Google Slides | Producción usa la nueva plantilla mediante la credencial `Google Drive account` |
 | Preparar Notificación Final | Configurado para enviar por YCloud/WhatsApp |
 
 ## Variables pendientes
@@ -40,7 +41,6 @@ El generador combina fuentes reales con configuración temporal. Cada salida con
 - HubSpot: automatización diferida hasta disponer de una Private App de solo
   lectura; mientras tanto los dos dashboards se insertan manualmente.
 - ID de carpeta de Google Drive.
-- Metas mensuales o metas del periodo acumulado.
 - Credencial de HubSpot en n8n.
 
 ## HubSpot: inserción manual vigente
@@ -74,30 +74,37 @@ generación y deduplicación por ID de contacto. La propiedad operativa es
 `estado_del_contacto`; los valores observados incluyen `Agendado`,
 `Marcar de nuevo`, `No útil`, `Seguimiento`, `Lead Caliente` y `Desistimiento`.
 
-## Preparación para Google Sheets
+## Google Sheets: metas mensuales en producción
 
-La siguiente conversación debe comenzar por Sheets sin esperar HubSpot. La
-integración debe sustituir `Cargar Configuración Temporal`, no las fuentes
-reales de Ads ni la sección manual de HubSpot. Antes de editar se debe obtener:
+- Hoja nativa: `1amDTwQEPHhBfM47T80O3KAxQ7FGY1gonGzXhXuAnkSU`.
+- Pestañas disponibles: `GENERAL`, `ENERO` a `AGOSTO`; el nodo selecciona el
+  mes vigente usando `America/Bogota`.
+- Sección inicial: `FLOW PROYECTO PEKIN`; columnas `FECHA`, `MEDIO`,
+  `OBJETIVO`, `CAMPAÑA`, `KPI`, `COSTO POR RESULTADO` e `INVERSIÓN`.
+- Credencial reutilizada: `Google Drive account`; Google Sheets API habilitada
+  en el proyecto OAuth `706849453819`.
+- Política: `MONTHLY_FULL_TARGET`. KPI e inversión son metas mensuales
+  completas y no se prorratean por los días transcurridos.
+- Reconocimiento, Inversión, Apartaestudios y Google PMAX son obligatorios. Si
+  Vivienda no tiene fila, se conservan sus resultados reales de Meta Ads y se
+  muestran `Meta no definida` y cumplimiento `N/D`.
+- La salida conserva `reportingContract`, `periodStartDate`, `periodEndDate`,
+  `periodDaysElapsed` y `periodLabel`.
+- La misma lectura procesa `FLOW PROYECTO SKALA` y `FLOW METRIKU`. Para Skala,
+  las filas de Inversión, Vivienda y Feria suman una meta mensual de 150 leads.
+  El flujo lee también la fila total de la hoja y detiene el informe si esa
+  cifra no coincide con la suma detallada.
 
-1. URL o ID de la hoja maestra y nombre exacto de cada pestaña;
-2. una fila real de Proyecto Pekín y la clave estable para localizarla;
-3. nombres de columnas para cliente, plantilla, carpeta, metas y presupuestos;
-4. definición de si cada meta es mensual completa o acumulada al corte;
-5. moneda/unidad de cada valor y tratamiento de celdas vacías;
-6. acceso de lectura para la cuenta OAuth usada por `Google Drive account`, o
-   una credencial separada de Google Sheets;
-7. política de error: detener el informe si falta la fila o un campo obligatorio.
+La validación aislada del 12 de agosto de 2026 leyó `AGOSTO!A1:J200`, combinó
+Sheets, Meta Ads y Google Ads reales, y no creó Slides ni envió WhatsApp. Obtuvo
+97,5 leads de meta, COP 2.000.000 de inversión planeada y 139 leads reales. El
+generador productivo quedó activo con 21 nodos y versión
+`96fd31ec-5346-43ba-b576-0d352eff7c6f`.
 
-Una vez validada la lectura de Sheets, integrar la sección Skala con sus tres
-campañas confirmadas —Inversión, Vivienda y Feria Gran Salón— y tomar de la hoja
-sus metas y presupuestos. La prueba inicial de Sheets debe ser aislada: no crear
-Slides ni enviar WhatsApp.
-
-La salida debe conservar `reportingContract`, `periodStartDate`,
-`periodEndDate`, `periodDaysElapsed` y `periodLabel`. No calcular metas
-acumuladas multiplicando datos ambiguos: la regla debe quedar explícita por
-columna.
+El 13 de agosto de 2026 se publicó el generador reconstruido para retirar la
+rama de dashboards y producir tablas fuente más etiquetas. Skala y Métriku
+continúan conectados a Meta Ads y Google Sheets. La versión productiva activa,
+con 22 nodos, es `9cfffeb3-0e24-443c-8e51-344bb1efe2a7`.
 
 ## Contrato temporal compartido
 
@@ -136,38 +143,58 @@ cuándo revisar; no modifica los límites del periodo consultado.
 La especificación completa, el mapeo de campos, el procedimiento de prueba y el
 rollback están en `GOOGLE_ADS_INTEGRATION.md`.
 
-## Configuración de Gemini
+## Datos y etiquetas para IA externa
 
-1. En Google AI Studio, crear una API key para Gemini desde una cuenta autorizada.
-2. No pegar la clave en el workflow, en Git ni en este documento.
-3. En n8n, crear una credencial Header Auth llamada `Gemini API - Tic Tac` con encabezado `x-goog-api-key`.
-4. Importar o actualizar `tictac-generador-informe-base.json` y seleccionar esa credencial en el nodo de Gemini.
-6. Ejecutar una prueba controlada y revisar los nodos:
-   - `Preparar Solicitud Gemini`
-   - `Generar Analisis con Gemini`
-   - `Validar Analisis Gemini`
-7. Confirmar que la salida contiene `aiSource: gemini-3.5-flash` y los tres textos de `strategicCopy`.
+Gemini no forma parte del generador. El nodo `Preparar Datos del Informe`
+produce el contrato `reportDataV1` con periodo, procedencia, resúmenes por
+campaña y series diarias, demográficas y de plataforma.
 
-El workflow usa una credencial cifrada para el encabezado `x-goog-api-key`, respuesta JSON estructurada y validación obligatoria antes de crear la presentación. Google Ads y Meta Ads usan datos reales; HubSpot se inserta manualmente y sus valores simulados no se publican.
+La rama `Actualizar Datos Dashboards`, el ID de la hoja técnica y las
+operaciones `createSheetsChart`/`NOT_LINKED_IMAGE` fueron retiradas del JSON
+local. `Preparar Batch Update` crea tablas con IDs estables y escribe dos
+etiquetas por página analítica:
 
-## Prueba real de Google Slides
+- `DASHBOARD A GENERAR`, con fuente, campaña/proyecto, tipo y periodo;
+- `ANÁLISIS A GENERAR`, con fuente, campaña/proyecto, criterios y periodo.
 
-- Plantilla nativa configurada: `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`.
+HubSpot y creativos permanecen como zonas manuales. La IA que genere después
+los dashboards y análisis es externa al workflow y recibe el Google Slides
+editable.
+
+## Prueba privada de Google Slides
+
+- Plantilla productiva/rollback: `16SvDTUUF9q7VspDWbX8Zr4YTU6QJi__L3oh5qvJYtq0`.
+- Nueva plantilla privada: `1cPlo9OeUWpfW7H1ACnbwpT59MSR_yruErFkVhc7jHOo`.
 - Credencial de n8n configurada por ID interno; el Client Secret no se guarda en este repositorio.
 - El envío final usa la credencial cifrada de n8n `YCloud API - Tic Tac`; la API key no queda escrita dentro del workflow.
-- Cada solicitud crea una copia nueva en Mi unidad, ejecuta 34 solicitudes de
-  reemplazo y envía el enlace al mismo número de WhatsApp que pidió el informe.
-- Las diapositivas 15 y 16 usan texto dinámico de Google Ads; la plantilla no
-  conserva capturas históricas con métricas que puedan contradecir el periodo.
-- Cada copia recibe el permiso `cualquier persona con el enlace: lector`, sin permitir edición ni aparecer en búsquedas públicas.
+- Cada solicitud crea una copia, reemplaza escalares y añade 20 tablas fuente.
+- El informe conserva 29 diapositivas y cero gráficos automáticos.
+- En producción, y solo después de aprobar el artefacto privado, la rama final
+  podrá otorgar permiso de lector y enviar el enlace por WhatsApp. La prueba
+  `2744` se detuvo antes de ambas operaciones.
 - Mientras no exista una carpeta final compartida, las copias quedan en la raíz de Mi unidad de la cuenta conectada.
 - Después del mensaje de confirmación, Meta muestra el indicador de escritura durante el procesamiento; se apaga con la respuesta final o a los 25 segundos.
-- La notificación final declara explícitamente: `Google Ads y Meta Ads: datos reales. HubSpot: inserción manual.`
+- La notificación final declara que Google Ads, Meta Ads y las metas de Sheets
+  son datos reales; los dashboards/análisis quedan para una IA externa y
+  HubSpot/creativos permanecen manuales.
 
 La aceptación definitiva del 12 de agosto de 2026 corresponde a la ejecución
 `2681`: 16 nodos exitosos, 47 ocurrencias reemplazadas, ningún placeholder
 residual y WhatsApp aceptado. El informe validado es:
 `https://docs.google.com/presentation/d/1BZz_ZsYiOOiD1LJLhN4T8HA3WrRd-KtFVAjpa5-ZmVQ/edit`.
+
+La validación privada vigente del 13 de agosto de 2026 no publicó permisos ni
+envió WhatsApp. La ejecución `2744` creó 20 tablas, aplicó 1.141 solicitudes,
+dejó cero placeholders y cero gráficos, y fue conciliada contra 129 filas de
+`reportDataV1`. Se revisaron visualmente las 29 diapositivas. Presentación:
+`https://docs.google.com/presentation/d/1GAnmA_kJ0ebIlzOt3L3CcE_wx1OrFfqKsGgjScSxYuo/edit`.
+
+La aceptación productiva `2746` completó los 22 nodos, publicó el informe como
+lector mediante enlace y envió WhatsApp al número de pruebas autorizado. El
+mensaje `6a7d73a4e3c0d81f9b263c81` fue aceptado. Informe:
+`https://docs.google.com/presentation/d/1jUwCYjpmA6kgCRsDS58gWPSkYXUrPKwlv3DzcexWpJk/edit`.
+La auditoría confirmó 29 diapositivas, 20 tablas nuevas, cero gráficos, cero
+placeholders y meta total Skala 150.
 
 El contrato `MONTH_TO_DATE` se validó posteriormente en la ejecución aislada
 `2684`: periodo del 1 al 12 de agosto de 2026, 12 días transcurridos, rango

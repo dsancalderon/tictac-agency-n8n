@@ -2,13 +2,13 @@
 
 **Cliente / Proyecto:** Tic Tac Agency (Nicolás)  
 **Desarrollador / Líder Técnico:** Santi  
-**Tecnología Base:** n8n (desplegado en Render), WhatsApp/YCloud, Google Ads API, Meta Ads API, Google Cloud (Slides/Drive/Sheets), HubSpot y Gemini 3.5 Flash
+**Tecnología Base:** n8n (desplegado en Render), WhatsApp/YCloud, Google Ads API, Meta Ads API, Google Cloud (Slides/Drive/Sheets) y HubSpot
 **Versión:** 1.0 (Fase 1: Prueba de Concepto Monocliente escalable a Multi-cliente)
 
-> Estado operativo al 12 de agosto de 2026: Google Ads y Meta Ads están activos
-> con datos reales bajo `MONTH_TO_DATE`. HubSpot se inserta manualmente en la
-> diapositiva 17. La siguiente implementación es Google Sheets; después se hará
-> dinámica la sección Skala con Inversión, Vivienda y Feria Gran Salón. Consultar
+> Estado operativo al 13 de agosto de 2026: Google Ads, Meta Ads y las metas de
+> Google Sheets están activos con datos reales bajo `MONTH_TO_DATE` para Pekín,
+> Skala y Métriku. El generador de tablas y etiquetas para IA externa está
+> publicado y validado en la ejecución `2746`. HubSpot se inserta manualmente en la diapositiva 17. Consultar
 > `CODEX_HANDOFF.md` para el estado autoritativo y los cambios locales pendientes.
 
 ---
@@ -17,10 +17,11 @@
 
 El objetivo es construir un **Flujo de Automatización Bajo Demanda en n8n** que permita a Nicolás (Director de Tic Tac Agency) solicitar y generar informes ejecutivos cada siete días para los clientes de su agencia directamente desde **WhatsApp**. Cada informe representa el acumulado del mes: comienza el día 1 y termina en el instante de generación.
 
-El sistema consulta datos reales de **Google Ads** y **Meta Ads**, utiliza
-**Gemini** para redactar la síntesis cualitativa y clona y rellena una plantilla
-de **Google Slides**. Google Sheets será la fuente autoritativa de configuración,
-metas y presupuestos. HubSpot permanece manual hasta disponer de una Private App.
+El sistema consulta datos reales de **Google Ads** y **Meta Ads**, construye
+`reportDataV1` y clona y rellena una plantilla de **Google Slides** con tablas
+fuente. Google Sheets es la fuente autoritativa de metas y presupuestos
+mensuales. Una IA externa generará posteriormente los dashboards y análisis a
+partir del Slides editable; HubSpot y creativos se completan manualmente.
 
 ---
 
@@ -34,7 +35,7 @@ graph TD
     B --> C{¿El mensaje especifica una Marca/Cliente?}
     
     C -->|Sí: Ejemplo 'Quiero el informe de Proyecto Pekín'| D[Enviar mensaje de confirmación inmediata]
-    D --> E[Ejecutar Flujo de Extracción + IA + Slides]
+    D --> E[Ejecutar extracción + tablas fuente + Slides]
     E --> F[Enviar mensaje con enlace al PDF/Slides generado en Google Drive]
 
     C -->|No: Ejemplo 'Hola', 'Buenas tardes' o consulta general| G[Enviar Menú Interactivo / Lista de Clientes Disponibles]
@@ -48,7 +49,7 @@ graph TD
 * **Nicolás:** *"Hola, genera el informe de Proyecto Pekín porfa."*
 * **Respuesta Automática n8n:**  
   > *"¡Recibido, Nicolás! 🚀 Estoy procesando las campañas para **Proyecto Pekín**. En un par de minutos te enviaré el enlace a las diapositivas listas en tu Drive."*
-* **Acción n8n:** Ejecuta la consulta de datos, el análisis por IA, la inyección en Google Slides y devuelve:  
+* **Acción n8n:** Ejecuta la consulta de datos, completa las tablas y etiquetas de Google Slides y devuelve:
   > *"✅ **Informe de Proyecto Pekín completado.**  
   > 📁 **Enlace al informe en Drive:** [Ver Presentación en Google Drive](https://drive.google.com/...)  
   > 📊 **Resumen:** 103 leads generados (54.2% cumplimiento de meta)."*
@@ -74,7 +75,7 @@ graph TD
 ### Nodo 2: Extract & Clean Payload (Code Node / Set Node)
 * **Función:** Extrae el número de teléfono del remitente (`from`), el nombre del remitente y el texto del mensaje (`message_text`).
 
-### Nodo 3: Intent Classifier / Router (Switch / Code Node + IA)
+### Nodo 3: Intent Classifier / Router (Switch / Code Node + reglas)
 * **Función:** Evalúa el texto del mensaje contra la lista de marcas activas en la Tabla Maestra.
   * Si encuentra la marca (ej: `Pekín` o `1`), asigna la variable `client_id = "CLI-001"` y toma la rama A.
   * Si no encuentra marca (ej: `Hola`), toma la rama B para desplegar el menú.
@@ -86,12 +87,12 @@ graph TD
 * **Función:** Responde inmediatamente a Nicolás confirmando que la generación ha comenzado.
 
 ### Nodo 6: Read Client Configuration (Google Sheets Node)
-* **Estado:** siguiente implementación pendiente.
-* **Función prevista:** Lee la fila del cliente en la Tabla Maestra de Google Sheets. Obtiene:
-  * ID de Empresa en HubSpot.
-  * ID de la Plantilla de Google Slides de Tic Tac Agency.
-  * ID de la Carpeta de Google Drive del Cliente.
-  * Metas mensuales o metas del periodo acumulado de leads e inversión.
+* **Estado:** activo en producción para Proyecto Pekín, Skala y Métriku.
+* **Función:** Selecciona la pestaña del mes vigente y lee KPI, costo por
+  resultado e inversión mensual de las campañas publicadas en el informe.
+* **Regla:** Las metas son mensuales completas. Si Vivienda no tiene meta en el
+  mes, conserva su rendimiento real y muestra `Meta no definida`, sin calcular
+  cumplimiento.
 
 ### Nodo 7: Data Collector (HubSpot API Node / HTTP Request)
 * **Estado:** diferido hasta disponer de una Private App de solo lectura.
@@ -99,13 +100,13 @@ graph TD
   `periodEnd`. Mientras tanto, la diapositiva 17 queda libre para pegar
   manualmente los dashboards aprobados.
 
-### Nodo 8: AI Strategic Copywriting (Gemini / OpenAI API Node)
-* **Función:** Recibe los datos consolidados y genera mediante un System Prompt especializado los textos ejecutivos para los bullet points de las diapositivas (estilo Tic Tac Agency).
+### Nodo 8: Preparar Datos del Informe
+* **Función:** Construye `reportDataV1` con periodo, procedencia, resúmenes por campaña y series diarias, demográficas y de plataforma. No crea gráficos.
 
 ### Nodo 9: Google Slides Engine (Google Slides API Node / HTTP Request)
 * **Función:** 
   1. Duplica la plantilla estándar de diapositivas de Tic Tac Agency.
-  2. Ejecuta un `batchUpdate` para reemplazar todos los placeholders dinámicos (`{{META_LEADS}}`, `{{CUMPLIMIENTO}}`, `{{ANALISIS_VIVIENDA}}`, `{{EMBUDO_MQLS}}`, etc.).
+  2. Ejecuta un `batchUpdate` para reemplazar placeholders escalares, crear tablas fuente con IDs estables y escribir etiquetas de dashboard/análisis para una IA posterior.
   3. Mueve la presentación duplicada a la carpeta de Drive del cliente.
 
 ### Nodo 10: Final Notification (HTTP Request Node)
@@ -122,7 +123,8 @@ Basado en la presentación real de 29 diapositivas de Tic Tac Agency (Proyecto P
 | **Portada (Slide 1-2)** | Configuración del Cliente | `{{NOMBRE_PROYECTO}}` |
 | **Tabla de Rendimiento (Slide 3)** | Google Sheets Metas + Ads API | `{{KPI_META}}`, `{{KPI_REAL}}`, `{{PERFORMANCE_PCT}}`, `{{INVERSION_REAL}}` |
 | **Performance por Línea (Slide 4)** | Datos calculados por n8n | `{{VIVIENDA_INVERSION}}`, `{{VIVIENDA_LEADS}}`, `{{VIVIENDA_CPA}}` |
-| **Análisis Cualitativo (Slides 5, 6, 7)** | **Gemini / ChatGPT API** | `{{ANALISIS_TENDENCIA_VIVIENDA}}`, `{{RECOMENDACION_AGENCIA_VIVIENDA}}` |
+| **Análisis Cualitativo** | IA externa posterior | Etiquetas visibles con fuente, campaña, criterios y periodo; sin IA dentro de n8n |
+| **Datos para dashboards Ads** | Meta Ads + Google Ads + Google Sheets | Tablas visibles de resumen, tendencia, demografía y plataforma |
 | **Dashboards HubSpot (Slide 17)** | Inserción manual vigente | Sin placeholders automáticos; área libre para dos dashboards |
 
 ---
@@ -141,17 +143,13 @@ Basado en la presentación real de 29 diapositivas de Tic Tac Agency (Proyecto P
 
 ---
 
-## 6. Prompt del Sistema Recomendado para el Nodo de IA
+## 6. Análisis y dashboards posteriores
 
-```text
-Eres un Director de Estrategia de Marketing Digital de la agencia "Tic Tac Agency".
-Tu tarea es analizar las métricas cuantitativas acumuladas del mes de las campañas y CRM del cliente, desde el día 1 hasta el instante de generación, y redactar observaciones ejecutivas breves, formales y proactivas para ser insertadas en una presentación de Google Slides. La revisión puede ocurrir cada siete días, pero nunca debes describir el periodo como una semana aislada ni como los últimos siete días.
-
-Formatos requeridos de tono:
-- Utiliza frases estratégicas como: "Durante los primeros días del período observamos...", "Desde la agencia, consideramos que...", "El siguiente paso será...".
-- Mantén un enfoque orientado a la rentabilidad, eficiencia de costo por lead (CPL/CPA) y optimización de canales (Instagram/Facebook).
-- Devuelve la respuesta en formato JSON estricto con las llaves correspondientes a los placeholders del reporte.
-```
+Gemini no forma parte del workflow. Cada página analítica muestra etiquetas
+`DASHBOARD A GENERAR` y `ANÁLISIS A GENERAR` con fuente, campaña, tipo,
+criterios y periodo. Una IA externa trabajará después sobre el Slides editable.
+El análisis debe contrastar el acumulado desde el día 1, la meta mensual completa, el
+CPA y la calidad del resultado antes de redactar el comentario definitivo.
 
 ---
 
